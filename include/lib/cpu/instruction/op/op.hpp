@@ -1,0 +1,23 @@
+#ifndef _CPU_INSTRUCTION_OP_OP_H_
+#define _CPU_INSTRUCTION_OP_OP_H_
+
+#include <cstdint>
+
+#include "lib/cpu/registers.hpp"
+#include "lib/memory/mmu.hpp"
+
+namespace gb_lib {
+
+class Op
+{
+public:
+    virtual ~Op() = default;
+
+    virtual bool canProceed();
+    virtual uint32_t getArgumentLengthInBytes();
+    virtual int32_t execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context);
+};
+
+}
+
+#endif

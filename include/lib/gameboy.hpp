@@ -1,0 +1,48 @@
+#ifndef _GAMEBOY_H_
+#define _GAMEBOY_H_
+
+#include <cstdint>
+#include <string>
+
+#include "lib/cpu/cpu.hpp"
+#include "lib/graphic/lcd_handler.hpp"
+#include "lib/memory/mmu_factory.hpp"
+#include "lib/timer_handler.hpp"
+
+namespace gb_lib {
+
+class GameBoy
+{
+public:
+    GameBoy(std::string romPath); // graphic, audio
+
+    void stepFrame();
+    void stepInstruction();
+
+    void reset();
+    void stop();
+
+    void saveState(uint32_t stateId);
+    void loadState(uint32_t stateId);
+
+private:
+    // audio processing unit
+    Cpu* cpu;
+    LCDHandler* lcdHandler;
+    MMU* mmu;
+    // pixel processing unit
+    Registers* registers;
+    TimerHandler* timerHandler;
+    uint32_t cpuCycle;
+
+private:
+    const uint32_t CPU_CYCLES_FOR_FRAME = 69905;
+
+private:
+    void initialize();
+
+};
+
+}
+
+#endif

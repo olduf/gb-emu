@@ -1,0 +1,17 @@
+#include "lib/cpu/instruction/op/alu/decrement_d8.hpp"
+
+namespace gb_lib {
+
+int32_t DecrementD8::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+{
+    int32_t result = context - 1;
+
+    Flags& flags = registers->getFlags();
+    flags.setZero((result & 0xFF) == 0);
+    flags.setSubtraction(true);
+    flags.setHalfCarry((context & 0x0F) == 0);
+
+    return result;
+}
+
+}
