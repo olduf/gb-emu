@@ -7,7 +7,7 @@ EnableInterrupts::EnableInterrupts(bool value)
     this->value = value;
 }
 
-int32_t EnableInterrupts::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t EnableInterrupts::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     registers->setIME(this->value);
 

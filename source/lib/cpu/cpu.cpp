@@ -2,7 +2,7 @@
 
 namespace gb_lib {
 
-Cpu::Cpu(InterruptHandler* interruptHandler, MMU* mmu, Registers* registers, SpeedModeHandler* speedModeHandler)
+Cpu::Cpu(InterruptHandler* interruptHandler, MemorySpace* mmu, Registers* registers, SpeedModeHandler* speedModeHandler)
 {
     this->cpuState = CpuState::INSTRUCTION;
     this->interruptHandler = interruptHandler;

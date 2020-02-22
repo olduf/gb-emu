@@ -1,8 +1,6 @@
 #ifndef _CPU_REGISTERS_H_
 #define _CPU_REGISTERS_H_
 
-#include <cstdint>
-
 #include "lib/cpu/flags.hpp"
 
 namespace gb_lib {

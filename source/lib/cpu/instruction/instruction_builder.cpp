@@ -154,12 +154,11 @@ InstructionBuilder& InstructionBuilder::push()
 
 InstructionBuilder& InstructionBuilder::resetBit(uint8_t n)
 {
-    if (n > 7)
+    if (n < 8)
     {
-        throw new std::runtime_error("bit greater than 7 for uint8_t type");
+        addOperation(new ResetBit(n));
     }
 
-    addOperation(new ResetBit(n));
     return *this;
 }
 
@@ -201,12 +200,11 @@ InstructionBuilder& InstructionBuilder::setCarryFlag()
 
 InstructionBuilder& InstructionBuilder::setBit(uint8_t n)
 {
-    if (n > 7)
+    if (n < 8)
     {
-        throw new std::runtime_error("bit greater than 7 for uint8_t type");
+        addOperation(new SetBit(n));
     }
 
-    addOperation(new SetBit(n));
     return *this;
 }
 
@@ -260,12 +258,11 @@ InstructionBuilder& InstructionBuilder::swapNibbles()
 
 InstructionBuilder& InstructionBuilder::testBit(uint8_t n)
 {
-    if (n > 7)
+    if (n < 8)
     {
-        throw new std::runtime_error("bit greater than 7 for uint8_t type");
+        addOperation(new TestBit(n));
     }
 
-    addOperation(new TestBit(n));
     return *this;
 }
 

@@ -1,11 +1,10 @@
 #ifndef _CPU_INSTRUCTION_ARGUMENT_H_
 #define _CPU_INSTRUCTION_ARGUMENT_H_
 
-#include <cstdint>
 #include <functional>
 
 #include "lib/cpu/registers.hpp"
-#include "lib/memory/mmu.hpp"
+#include "lib/memory/memory_space.hpp"
 
 namespace gb_lib {
 
@@ -34,8 +33,8 @@ public:
     static const InstructionArgument _N;
     static const InstructionArgument _NN;
 
-    int32_t get(Registers* registers, MMU* mmu, int32_t opArgument) const;
-    void set(Registers* registers, MMU* mmu, int32_t opArgument, int32_t value) const;
+    int32_t get(Registers* registers, MemorySpace* mmu, int32_t opArgument) const;
+    void set(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t value) const;
 
     uint32_t getArgumentLengthInBytes() const;
 
@@ -44,13 +43,13 @@ public:
 private:
     InstructionArgument(
         uint32_t argumentLengthInBytes,
-        std::function<int32_t(Registers*, MMU*, int32_t)> getOperation,
-        std::function<void(Registers*, MMU*, int32_t, int32_t)> setOperation);
+        std::function<int32_t(Registers*, MemorySpace*, int32_t)> getOperation,
+        std::function<void(Registers*, MemorySpace*, int32_t, int32_t)> setOperation);
 
     uint32_t argumentLengthInBytes;
 
-    std::function<int32_t(Registers*, MMU*, int32_t)> getOperation;
-    std::function<void(Registers*, MMU*, int32_t, int32_t)> setOperation;
+    std::function<int32_t(Registers*, MemorySpace*, int32_t)> getOperation;
+    std::function<void(Registers*, MemorySpace*, int32_t, int32_t)> setOperation;
 };
 
 }

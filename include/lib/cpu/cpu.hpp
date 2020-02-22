@@ -8,7 +8,7 @@
 #include "lib/cpu/registers.hpp"
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/cpu/state.hpp"
-#include "lib/memory/mmu.hpp"
+#include "lib/memory/memory_space.hpp"
 
 namespace gb_lib {
 
@@ -20,14 +20,14 @@ const uint8_t STOP = 0x10;
 class Cpu
 {
 public:
-    Cpu(InterruptHandler* interruptHandler, MMU* mmu, Registers* registers, SpeedModeHandler* speedModeHandler);
+    Cpu(InterruptHandler* interruptHandler, MemorySpace* mmu, Registers* registers, SpeedModeHandler* speedModeHandler);
 
     uint32_t tick();
 
 private:
     CpuState cpuState;
     InterruptHandler* interruptHandler;
-    MMU* mmu;
+    MemorySpace* mmu;
     Registers* registers;
     SpeedModeHandler* speedModeHandler;
 };

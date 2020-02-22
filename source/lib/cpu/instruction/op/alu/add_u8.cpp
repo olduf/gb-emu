@@ -12,7 +12,7 @@ uint32_t AddU8::getArgumentLengthInBytes()
     return this->argument->getArgumentLengthInBytes();
 }
 
-int32_t AddU8::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t AddU8::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     int32_t operand = this->argument->get(registers, mmu, opArgument);
     int32_t result = context + operand;

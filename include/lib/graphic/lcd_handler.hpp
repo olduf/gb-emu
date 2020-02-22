@@ -5,8 +5,7 @@
 
 #include "lib/cpu/interrupt_handler.hpp"
 #include "lib/memory/memory_location.hpp"
-#include "lib/memory/mmu.hpp"
-#include "lib/util/bit_util.hpp"
+#include "lib/memory/memory_space.hpp"
 
 namespace gb_lib {
 
@@ -27,14 +26,14 @@ enum class ObjComposition : uint8_t
 class LCDHandler
 {
 public:
-    LCDHandler(InterruptHandler* interruptHandler, MMU* mmu, bool isCGB);
+    LCDHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, bool isCGB);
 
     void updateLCD(uint32_t consumedCpuCycle);
 
 private:
     bool isCGB;
     InterruptHandler* interruptHandler;
-    MMU* mmu;
+    MemorySpace* mmu;
     uint32_t cpuCycle;
 
 private:

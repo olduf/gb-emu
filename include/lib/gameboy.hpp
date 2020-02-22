@@ -1,9 +1,6 @@
 #ifndef _GAMEBOY_H_
 #define _GAMEBOY_H_
 
-#include <cstdint>
-#include <string>
-
 #include "lib/cpu/cpu.hpp"
 #include "lib/graphic/lcd_handler.hpp"
 #include "lib/memory/mmu_factory.hpp"
@@ -29,7 +26,7 @@ private:
     // audio processing unit
     Cpu* cpu;
     LCDHandler* lcdHandler;
-    MMU* mmu;
+    MemorySpace* mmu;
     // pixel processing unit
     Registers* registers;
     TimerHandler* timerHandler;

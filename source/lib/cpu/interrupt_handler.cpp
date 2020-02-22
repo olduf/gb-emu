@@ -2,7 +2,7 @@
 
 namespace gb_lib {
 
-InterruptHandler::InterruptHandler(MMU* mmu, Registers* registers)
+InterruptHandler::InterruptHandler(MemorySpace* mmu, Registers* registers)
 {
    this->needsToEnableInterrupt = false;
    this->mmu = mmu;

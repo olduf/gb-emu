@@ -1,12 +1,9 @@
 #ifndef _CPU_INSTRUCTION_INSTRUCTION_H_
 #define _CPU_INSTRUCTION_INSTRUCTION_H_
 
-#include <cstdint>
 #include <string>
 
 #include "lib/cpu/instruction/op/op.hpp"
-#include "lib/cpu/registers.hpp"
-#include "lib/memory/mmu.hpp"
 
 namespace gb_lib {
 
@@ -25,7 +22,7 @@ public:
     uint32_t getCode();
     Op** getOps();
 
-    uint32_t execute(Registers* registers, MMU* mmu, int32_t context);
+    uint32_t execute(Registers* registers, MemorySpace* mmu, int32_t context);
 
 private:
     Op* ops[8];
@@ -37,7 +34,7 @@ private:
     uint32_t numberOfOperations;
 
 private:
-    int32_t getOpArgument(MMU* mmu, uint16_t pc);
+    int32_t getOpArgument(MemorySpace* mmu, uint16_t pc);
 };
 
 }

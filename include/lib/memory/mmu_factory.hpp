@@ -1,8 +1,6 @@
 #ifndef _MEMORY_FACTORY_H_
 #define _MEMORY_FACTORY_H_
 
-#include <cstdint>
-
 #include "lib/memory/cartridge/cartridge_factory.hpp"
 #include "lib/memory/io_registers.hpp"
 #include "lib/memory/mmu.hpp"

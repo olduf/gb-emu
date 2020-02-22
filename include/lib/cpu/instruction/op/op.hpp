@@ -1,10 +1,8 @@
 #ifndef _CPU_INSTRUCTION_OP_OP_H_
 #define _CPU_INSTRUCTION_OP_OP_H_
 
-#include <cstdint>
-
 #include "lib/cpu/registers.hpp"
-#include "lib/memory/mmu.hpp"
+#include "lib/memory/memory_space.hpp"
 
 namespace gb_lib {
 
@@ -15,7 +13,7 @@ public:
 
     virtual bool canProceed();
     virtual uint32_t getArgumentLengthInBytes();
-    virtual int32_t execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context);
+    virtual int32_t execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context);
 };
 
 }

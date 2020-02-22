@@ -66,7 +66,7 @@ Op** Instruction::getOps()
     return this->ops;
 }
 
-uint32_t Instruction::execute(Registers* registers, MMU* mmu, int32_t context)
+uint32_t Instruction::execute(Registers* registers, MemorySpace* mmu, int32_t context)
 {
     int32_t opArgument = this->getOpArgument(mmu, registers->getPC());
     registers->incrementPC(this->lengthInBytes);
@@ -95,7 +95,7 @@ uint32_t Instruction::execute(Registers* registers, MMU* mmu, int32_t context)
     }
 }
 
-int32_t Instruction::getOpArgument(MMU* mmu, uint16_t pc)
+int32_t Instruction::getOpArgument(MemorySpace* mmu, uint16_t pc)
 {
     int32_t opArgument = 0;
 

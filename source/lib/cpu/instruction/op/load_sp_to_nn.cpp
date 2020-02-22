@@ -2,7 +2,7 @@
 
 namespace gb_lib {
 
-int32_t LoadSPToNN::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t LoadSPToNN::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     uint16_t address = static_cast<uint16_t>(opArgument & 0xFFFF);
     uint16_t sp = registers->getSP();

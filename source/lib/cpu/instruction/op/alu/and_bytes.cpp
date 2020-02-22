@@ -12,7 +12,7 @@ uint32_t AndBytes::getArgumentLengthInBytes()
     return this->argument->getArgumentLengthInBytes();
 }
 
-int32_t AndBytes::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t AndBytes::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     int32_t operand = this->argument->get(registers, mmu, opArgument);
     int32_t result = (context & operand) & 0xFF;

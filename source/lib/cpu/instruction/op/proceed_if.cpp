@@ -13,7 +13,7 @@ bool ProceedIf::canProceed()
     return this->ableToProceed;
 }
 
-int32_t ProceedIf::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t ProceedIf::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     switch (this->condition)
     {

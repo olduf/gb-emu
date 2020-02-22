@@ -2,7 +2,7 @@
 
 namespace gb_lib {
 
-SpeedModeHandler::SpeedModeHandler(MMU* mmu)
+SpeedModeHandler::SpeedModeHandler(MemorySpace* mmu)
 {
     this->mmu = mmu;
     this->speedMode = SpeedMode::NORMAL;

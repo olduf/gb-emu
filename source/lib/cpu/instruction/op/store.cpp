@@ -12,7 +12,7 @@ uint32_t Store::getArgumentLengthInBytes()
     return this->destination->getArgumentLengthInBytes();
 }
 
-int32_t Store::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t Store::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     this->destination->set(registers, mmu, opArgument, context);
 

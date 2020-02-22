@@ -12,7 +12,7 @@ uint32_t Compare::getArgumentLengthInBytes()
     return this->argument->getArgumentLengthInBytes();
 }
 
-int32_t Compare::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t Compare::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     int32_t operand = this->argument->get(registers, mmu, opArgument);
     Flags& flags = registers->getFlags();

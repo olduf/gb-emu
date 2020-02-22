@@ -7,7 +7,7 @@ SetFlagZero::SetFlagZero(bool value)
     this->value = value;
 }
 
-int32_t SetFlagZero::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t SetFlagZero::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     registers->getFlags().setZero(this->value);
 

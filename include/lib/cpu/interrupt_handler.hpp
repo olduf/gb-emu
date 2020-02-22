@@ -5,7 +5,7 @@
 
 #include "lib/cpu/instructions.hpp"
 #include "lib/cpu/registers.hpp"
-#include "lib/memory/mmu.hpp"
+#include "lib/memory/memory_space.hpp"
 #include "lib/memory/memory_location.hpp"
 #include "lib/util/bit_util.hpp"
 
@@ -23,7 +23,7 @@ enum class Interrupt : uint8_t
 class InterruptHandler
 {
 public:
-    InterruptHandler(MMU* mmu, Registers* registers);
+    InterruptHandler(MemorySpace* mmu, Registers* registers);
 
     void runEI();
     void handleEI();
@@ -33,7 +33,7 @@ public:
 
 private:
     bool needsToEnableInterrupt;
-    MMU* mmu;
+    MemorySpace* mmu;
     Registers* registers;
 };
 

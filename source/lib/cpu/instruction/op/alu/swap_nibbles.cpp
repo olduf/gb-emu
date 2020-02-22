@@ -2,7 +2,7 @@
 
 namespace gb_lib {
 
-int32_t SwapNibbles::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t SwapNibbles::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     uint8_t lowerNibble = context & 0x0F;
     uint8_t upperNibble = context & 0xF0;

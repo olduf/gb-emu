@@ -1,11 +1,6 @@
 #ifndef _CPU_INSTRUCTION_BUILDER_H_
 #define _CPU_INSTRUCTION_BUILDER_H_
 
-#include <cstdint>
-#include <stdexcept>
-#include <string>
-
-#include "lib/cpu/flags.hpp"
 #include "lib/cpu/instruction/op/affect_flags_type.hpp"
 #include "lib/cpu/instruction/op/alu/add.hpp"
 #include "lib/cpu/instruction/op/alu/add_s8.hpp"
@@ -43,7 +38,6 @@
 #include "lib/cpu/instruction/op/jump.hpp"
 #include "lib/cpu/instruction/op/load.hpp"
 #include "lib/cpu/instruction/op/load_sp_to_nn.hpp"
-#include "lib/cpu/instruction/op/op.hpp"
 #include "lib/cpu/instruction/op/pop.hpp"
 #include "lib/cpu/instruction/op/proceed_if.hpp"
 #include "lib/cpu/instruction/op/push.hpp"

@@ -1,7 +1,6 @@
 #ifndef _MEMORY_MMU_H_
 #define _MEMORY_MMU_H_
 
-#include <cstdio>
 #include "lib/memory/memory_space.hpp"
 
 namespace gb_lib {

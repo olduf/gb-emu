@@ -2,7 +2,7 @@
 
 namespace gb_lib {
 
-int32_t RotateRightAndCarry::execute(Registers* registers, MMU* mmu, int32_t opArgument, int32_t context)
+int32_t RotateRightAndCarry::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     Flags& flags = registers->getFlags();
     context = context & 0xFF;

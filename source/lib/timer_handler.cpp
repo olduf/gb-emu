@@ -2,7 +2,7 @@
 
 namespace gb_lib {
 
-TimerHandler::TimerHandler(InterruptHandler* interruptHandler, MMU* mmu, SpeedModeHandler* speedModeHandler)
+TimerHandler::TimerHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, SpeedModeHandler* speedModeHandler)
 {
     this->interruptHandler = interruptHandler;
     this->mmu = mmu;
@@ -26,13 +26,14 @@ uint8_t TimerHandler::getTimerModulo()
     return this->mmu->getByte(TMA);
 }
 
-uint32_t TimerHandler::getFrequency()
+uint32_t TimerHandler::getTimerFrequency()
 {
-    uint32_t timerFrequency = this->timerFrequencies[(this->mmu->getByte(TAC) & 3)];
+    return this->timerFrequencies[(this->mmu->getByte(TAC) & 3)] * static_cast<uint32_t>(this->speedModeHandler->getSpeedMode());
+}
 
-    uint32_t clockSpeed = this->normalClockSpeed * static_cast<uint32_t>(this->speedModeHandler->getSpeedMode());
-
-    return clockSpeed / timerFrequency;
+void TimerHandler::handleDivider(uint32_t consumedCpuCycle)
+{
+    uint32_t dividerValue = static_cast<uint32_t>(this->mmu->getByte(DIV));
 }
 
 }

@@ -2,7 +2,7 @@
 
 namespace gb_lib {
 
-LCDHandler::LCDHandler(InterruptHandler* interruptHandler, MMU* mmu, bool isCGB)
+LCDHandler::LCDHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, bool isCGB)
 {
     this->cpuCycle = 0;
     this->interruptHandler = interruptHandler;

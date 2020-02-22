@@ -1,7 +1,7 @@
 #ifndef _CPU_SPEEDMODE_HANDLER_H_
 #define _CPU_SPEEDMODE_HANDLER_H_
 
-#include "lib/memory/mmu.hpp"
+#include "lib/memory/memory_space.hpp"
 #include "lib/memory/memory_location.hpp"
 #include "lib/util/bit_util.hpp"
 
@@ -16,14 +16,14 @@ enum class SpeedMode
 class SpeedModeHandler
 {
 public:
-    SpeedModeHandler(MMU* mmu);
+    SpeedModeHandler(MemorySpace* mmu);
 
     SpeedMode getSpeedMode();
 
     void handleSpeedMode();
 
 private:
-    MMU* mmu;
+    MemorySpace* mmu;
     SpeedMode speedMode;
 };
 
