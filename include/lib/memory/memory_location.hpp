@@ -26,11 +26,7 @@ namespace gb_lib {
     const uint16_t TMA = 0xFF06;
 
     // Timer control
-    // Bit 7 - Not used
-    // Bit 6 - Not used
-    // Bit 5 - Not used
-    // Bit 4 - Not used
-    // Bit 3 - Not used
+    // Bit 3-7 - Not used
     // Bit 2 - Timer stop (0: stop, 1: operate)
     // Bit 1-0 - Timer frequency (see below) (f = 4194304 in NORMAL speed, f = 8388608 in DOUBLE speed)
     //       0: f / 2^10
@@ -40,9 +36,7 @@ namespace gb_lib {
     const uint16_t TAC = 0xFF07;
 
     // Interupt request flag
-    // Bit 7 - Not used
-    // Bit 6 - Not used
-    // Bit 5 - Not used
+    // Bit 5-7 - Not used
     // Bit 4 - Input
     // Bit 3 - Serial
     // Bit 2 - Timer

@@ -157,7 +157,8 @@ void MMU::setByte(uint16_t address, uint8_t value)
 // TODO
 void MMU::setByteInternal(uint16_t address, uint8_t value)
 {
-    if (address == 0xFF44) { this->ioRegisters->setByteInternal(address, value); }
+
+    if (address >= 0xFF00 || address < 0xFF80) { this->ioRegisters->setByteInternal(address, value); }
 }
 
 }

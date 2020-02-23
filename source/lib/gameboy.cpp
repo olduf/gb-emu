@@ -11,10 +11,12 @@ GameBoy::GameBoy(std::string romPath)
 
 void GameBoy::stepFrame()
 {
-    while (this->cpuCycle < CPU_CYCLES_FOR_FRAME)
+    while (this->cpuCycle < (CPU_CYCLES_FOR_FRAME * static_cast<uint32_t>(this->speedModeHandler->getSpeedMode())))
     {
         this->stepInstruction();
     }
+
+    // render frame
 
     this->cpuCycle = 0;
 }

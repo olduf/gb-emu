@@ -4,7 +4,6 @@
 #include <cstdint>
 
 #include "lib/cpu/interrupt_handler.hpp"
-#include "lib/cpu/speedmode_handler.hpp"
 #include "lib/memory/memory_location.hpp"
 #include "lib/memory/mmu.hpp"
 #include "lib/util/bit_util.hpp"
@@ -14,18 +13,18 @@ namespace gb_lib {
 class TimerHandler
 {
 public:
-    TimerHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, SpeedModeHandler* speedModeHandler);
+    TimerHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, bool isCGB);
 
     void updateTimers(uint32_t consumedCpuCycle);
 
 private:
     InterruptHandler* interruptHandler;
     MemorySpace* mmu;
-    SpeedModeHandler* speedModeHandler;
+    uint32_t internalDivCounter;
+    uint32_t internalTimerCounter;
 
 private:
     bool isTimerEnabled();
-    uint8_t getTimerModulo();
     uint32_t getTimerFrequency();
     void handleDivider(uint32_t consumedCpuCycle);
 
