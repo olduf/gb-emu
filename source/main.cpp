@@ -17,7 +17,6 @@
 #include "lib/memory/mmu_factory.hpp"
 #include "lib/cpu/instructions.hpp"
 
-void runFrame();
 int defaultMain();
 int sfmlMain();
 
@@ -51,34 +50,48 @@ int main()
 
 void tickProgram()
 {
+    uint16_t cb = 0;
     uint16_t pc = registers.getPC();
     code = mmu->getByte(pc);
     if (code == 0xCB)
     {
         instruction = gb_lib::instructions[1][mmu->getByte(pc) + 1];
+        cb = 1;
     }
     else
     {
         instruction = gb_lib::instructions[0][code];
     }
 
+    std::stringstream ss;
+    ss << "PC: " << std::setw(4) << std::setfill('0') << std::hex << pc << ", operation: " << instruction->getLabel() << " ";
+    if (instruction->getArgumentLength() == 1)
+    {
+
+
+          ss << "(n = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
+    }
+    else if (instruction->getArgumentLength() == 2)
+    {
+          ss << "(nn = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 2);
+          ss << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
+    }
+    ss << "\n";
+    std::cout << ss.str();
+
+
+    if (registers.getPC() > 0x27A1)
+    {
+        std::string input;
+        std::getline(std::cin, input);
+
+        std::cout << getProgramStateString(instruction, registers);
+    }
+
     uint32_t consumedCpuCycle = cpu.tick();
     lcdHandler.updateLCD(consumedCpuCycle);
 
     cpuCycle += consumedCpuCycle;
-}
-
-void runFrame()
-{
-    uint32_t cpuCycle = 0;
-
-    while (cpuCycle < 69905)
-    {
-        uint32_t consumedCpuCycle = cpu.tick();
-        // update timers
-        lcdHandler.updateLCD(consumedCpuCycle);
-        cpuCycle += consumedCpuCycle;
-    }
 }
 
 std::string getProgramStateString(gb_lib::Instruction* instruction, gb_lib::Registers& registers)
@@ -95,13 +108,6 @@ std::string getProgramStateString(gb_lib::Instruction* instruction, gb_lib::Regi
     ss << "SP: 0x" << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getSP() << ", ";
     ss << "PC: 0x" << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getPC() << ", ";
     ss << "IME: " << registers.isIME() << "\n";
-
-    if (instruction != nullptr)
-    {
-        ss << "Operation: " << instruction->getLabel() << ", ";
-        ss << "code : 0x" << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << instruction->getCode() << ", ";
-        ss << "cycle: " << std::dec << instruction->getCpuCycle() << "\n";
-    }
 
     return ss.str();
 }
@@ -134,14 +140,6 @@ int defaultMain()
     bool loop = true;
     while (loop)
     {
-        if (registers.getPC() > 0x0239)
-        {
-            std::string input;
-            std::getline(std::cin, input);
-
-            std::cout << getProgramStateString(instruction, registers);
-        }
-
         tickProgram();
     }
 

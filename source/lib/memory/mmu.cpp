@@ -2,11 +2,27 @@
 
 namespace gb_lib {
 
-MMU::MMU(MemorySpace* cartridge, MemorySpace* ioRegisters, MemorySpace* workingRam)
+MMU::MMU(MemorySpace* cartridge, MemorySpace* ioRegisters, MemorySpace* videoRam, MemorySpace* workingRam)
 {
     this->cartridge = cartridge;
     this->ioRegisters = ioRegisters;
+    this->videoRam = videoRam;
     this->workingRam = workingRam;
+}
+
+MMU::~MMU()
+{
+    delete this->cartridge;
+    this->cartridge = nullptr;
+
+    delete this->ioRegisters;
+    this->ioRegisters = nullptr;
+
+    delete this->videoRam;
+    this->videoRam = nullptr;
+
+    delete this->workingRam;
+    this->workingRam = nullptr;
 }
 
 uint8_t MMU::getByte(uint16_t address)
@@ -27,7 +43,7 @@ uint8_t MMU::getByte(uint16_t address)
       // VRAM
       case 0x8000:
       case 0x9000:
-          return this->temp[address];
+          return this->videoRam->getByte(address);
       // GameBoy working ram
       case 0xC000:
       case 0xD000:
@@ -99,7 +115,7 @@ void MMU::setByte(uint16_t address, uint8_t value)
         // VRAM
         case 0x8000:
         case 0x9000:
-            this->temp[address] = value;
+            this->videoRam->setByte(address, value);
             break;
         // GameBoy working ram
         case 0xC000:
@@ -157,7 +173,6 @@ void MMU::setByte(uint16_t address, uint8_t value)
 // TODO
 void MMU::setByteInternal(uint16_t address, uint8_t value)
 {
-
     if (address >= 0xFF00 || address < 0xFF80) { this->ioRegisters->setByteInternal(address, value); }
 }
 

@@ -37,7 +37,7 @@ uint8_t IORegisters::getByte(uint16_t address)
     return this->registers[address & 0x00FF];
 }
 
-// TODO
+// TODO - implement correct write-reset behavior
 void IORegisters::setByte(uint16_t address, uint8_t value)
 {
     this->registers[address & 0x00FF] = value;

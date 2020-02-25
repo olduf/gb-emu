@@ -4,11 +4,23 @@ namespace gb_lib {
 
 MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, bool isCGB)
 {
-  MemorySpace* cartridge = this->cartridgeFactory.create(rom, romSize);
-  MemorySpace* ioRegisters = new IORegisters(isCGB);
-  MemorySpace* workingRam = new WorkingRam(ioRegisters);
+    MemorySpace* cartridge = this->cartridgeFactory.create(rom, romSize);
+    MemorySpace* ioRegisters = new IORegisters(isCGB);
 
-  return new MMU(cartridge, ioRegisters, workingRam);
+    MemorySpace* videoRam = nullptr;
+    MemorySpace* workingRam = nullptr;
+
+    if (isCGB)
+    {
+        videoRam = new CGBVideoRam(ioRegisters);
+        workingRam = new CGBWorkingRam(ioRegisters);
+    }
+    else
+    {
+        videoRam = new VideoRam();
+        workingRam = new WorkingRam();
+    }
+  return new MMU(cartridge, ioRegisters, videoRam, workingRam);
 }
 
 }

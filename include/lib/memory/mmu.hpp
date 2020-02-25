@@ -8,7 +8,8 @@ namespace gb_lib {
 class MMU : public MemorySpace
 {
 public:
-    MMU(MemorySpace* cartridge, MemorySpace* ioRegisters, MemorySpace* workingRam);
+    MMU(MemorySpace* cartridge, MemorySpace* ioRegisters, MemorySpace* videoRam, MemorySpace* workingRam);
+    ~MMU();
 
     uint8_t getByte(uint16_t address);
     void setByte(uint16_t address, uint8_t value);
@@ -18,6 +19,7 @@ public:
 private:
     MemorySpace* cartridge;
     MemorySpace* ioRegisters;
+    MemorySpace* videoRam;
     MemorySpace* workingRam;
     uint8_t temp[0xFFFF] = {};
 };

@@ -103,7 +103,7 @@ namespace gb_lib {
     const uint16_t OCPS = 0xFF6A;
     const uint16_t OCPB = 0xFF6B;
 
-    const uint16_t SBVK = 0xFF70;
+    const uint16_t SVBK = 0xFF70;
 
     const uint16_t IE = 0xFFFF;
 }
