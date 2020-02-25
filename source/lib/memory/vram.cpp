@@ -2,6 +2,11 @@
 
 namespace gb_lib {
 
+VideoRam::VideoRam(MemorySpace* ioRegisters)
+{
+    this->ioRegisters = ioRegisters;
+}
+
 uint8_t VideoRam::getByte(uint16_t address)
 {
     return this->vram[address - 0x8000];

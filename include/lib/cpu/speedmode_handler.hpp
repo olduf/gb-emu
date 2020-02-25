@@ -1,17 +1,12 @@
 #ifndef _CPU_SPEEDMODE_HANDLER_H_
 #define _CPU_SPEEDMODE_HANDLER_H_
 
+#include "lib/cpu/speed_mode.hpp"
 #include "lib/memory/memory_space.hpp"
 #include "lib/memory/memory_location.hpp"
 #include "lib/util/bit_util.hpp"
 
 namespace gb_lib {
-
-enum class SpeedMode
-{
-    NORMAL = 1,
-    DOUBLE = 2
-};
 
 class SpeedModeHandler
 {

@@ -17,10 +17,11 @@ MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, bool isCGB)
     }
     else
     {
-        videoRam = new VideoRam();
+        videoRam = new VideoRam(ioRegisters);
         workingRam = new WorkingRam();
     }
-  return new MMU(cartridge, ioRegisters, videoRam, workingRam);
+
+    return new MMU(cartridge, ioRegisters, videoRam, workingRam);
 }
 
 }

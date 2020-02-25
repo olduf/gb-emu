@@ -4,24 +4,12 @@
 #include <cstdint>
 
 #include "lib/cpu/interrupt_handler.hpp"
+#include "lib/graphic/lcd_mode.hpp"
+#include "lib/graphic/obj_composition.hpp"
 #include "lib/memory/memory_location.hpp"
 #include "lib/memory/memory_space.hpp"
 
 namespace gb_lib {
-
-enum class LCDMode : uint8_t
-{
-    HBLANK = 0,        // 204 cpu cycles
-    VBLANK = 1,        // 4560 cpu cycles
-    OAM_SEARCH = 2,    // 80 cpy cycles
-    PIXEL_TRANSFER = 3 // 172 cpu cycles
-};
-
-enum class ObjComposition : uint8_t
-{
-    BLOCK_8_BY_8 = 0,
-    BLOCK_8_BY_16 = 4
-};
 
 class LCDHandler
 {
