@@ -14,7 +14,12 @@ uint8_t CGBVideoRam::getByte(uint16_t address)
 
 void CGBVideoRam::setByte(uint16_t address, uint8_t value)
 {
-    this->vram[this->getEffectiveAddress(address)] = value;
+    LCDStatusUtil lcdStatusUtil;
+
+    if (lcdStatusUtil.getLCDMode(this->ioRegisters) != LCDMode::PIXEL_TRANSFER)
+    {
+        this->vram[this->getEffectiveAddress(address)] = value;
+    }
 }
 
 uint16_t CGBVideoRam::getEffectiveAddress(uint16_t address)

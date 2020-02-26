@@ -4,24 +4,21 @@
 #include <cstdint>
 
 #include "lib/cpu/interrupt_handler.hpp"
-#include "lib/graphic/lcd_mode.hpp"
-#include "lib/graphic/obj_composition.hpp"
-#include "lib/memory/memory_location.hpp"
-#include "lib/memory/memory_space.hpp"
+#include "lib/graphic/lcd_status_util.hpp"
 
 namespace gb_lib {
 
 class LCDHandler
 {
 public:
-    LCDHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, bool isCGB);
+    LCDHandler(InterruptHandler* interruptHandler, MemorySpace* ioRegisters, bool isCGB);
 
     void updateLCD(uint32_t consumedCpuCycle);
 
 private:
     bool isCGB;
     InterruptHandler* interruptHandler;
-    MemorySpace* mmu;
+    MemorySpace* ioRegisters;
     uint32_t cpuCycle;
 
 private:
@@ -36,9 +33,6 @@ private:
     bool isLCDEnabled(uint8_t lcdc);
 
     ObjComposition getObjComposition(uint8_t lcdc);
-
-    LCDMode getLCDMode(uint8_t stat);
-    void setLCDMode(uint8_t stat, LCDMode lcdMode);
 
     void handleLCDStatus();
 };

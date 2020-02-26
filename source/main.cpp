@@ -36,7 +36,7 @@ gb_lib::SpeedModeHandler speedModeHandler(mmu);
 
 gb_lib::InterruptHandler interruptHandler(mmu, &registers);
 gb_lib::Cpu cpu(&interruptHandler, mmu, &registers, &speedModeHandler);
-gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu, false);
+gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu->getIORegisters(), false);
 
 uint8_t code = 0;
 gb_lib::Instruction* instruction = nullptr;

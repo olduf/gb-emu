@@ -14,7 +14,12 @@ uint8_t VideoRam::getByte(uint16_t address)
 
 void VideoRam::setByte(uint16_t address, uint8_t value)
 {
-    this->vram[address - 0x8000] = value;
+    LCDStatusUtil lcdStatusUtil;
+
+    if (lcdStatusUtil.getLCDMode(this->ioRegisters) != LCDMode::PIXEL_TRANSFER)
+    {
+        this->vram[address - 0x8000] = value;
+    }
 }
 
 }

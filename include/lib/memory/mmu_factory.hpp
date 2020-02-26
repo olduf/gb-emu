@@ -6,6 +6,7 @@
 #include "lib/memory/cgb_working_ram.hpp"
 #include "lib/memory/io_registers.hpp"
 #include "lib/memory/mmu.hpp"
+#include "lib/memory/oam.hpp"
 #include "lib/memory/vram.hpp"
 #include "lib/memory/working_ram.hpp"
 

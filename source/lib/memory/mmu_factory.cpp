@@ -6,6 +6,7 @@ MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, bool isCGB)
 {
     MemorySpace* cartridge = this->cartridgeFactory.create(rom, romSize);
     MemorySpace* ioRegisters = new IORegisters(isCGB);
+    MemorySpace* oam = new OAM(ioRegisters);
 
     MemorySpace* videoRam = nullptr;
     MemorySpace* workingRam = nullptr;
@@ -21,7 +22,7 @@ MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, bool isCGB)
         workingRam = new WorkingRam();
     }
 
-    return new MMU(cartridge, ioRegisters, videoRam, workingRam);
+    return new MMU(cartridge, ioRegisters, oam, videoRam, workingRam);
 }
 
 }

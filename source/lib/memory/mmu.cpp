@@ -2,10 +2,11 @@
 
 namespace gb_lib {
 
-MMU::MMU(MemorySpace* cartridge, MemorySpace* ioRegisters, MemorySpace* videoRam, MemorySpace* workingRam)
+MMU::MMU(MemorySpace* cartridge, MemorySpace* ioRegisters, MemorySpace* oam, MemorySpace* videoRam, MemorySpace* workingRam)
 {
     this->cartridge = cartridge;
     this->ioRegisters = ioRegisters;
+    this->oam = oam;
     this->videoRam = videoRam;
     this->workingRam = workingRam;
 }
@@ -17,6 +18,9 @@ MMU::~MMU()
 
     delete this->ioRegisters;
     this->ioRegisters = nullptr;
+
+    delete this->oam;
+    this->oam = nullptr;
 
     delete this->videoRam;
     this->videoRam = nullptr;
@@ -74,7 +78,7 @@ uint8_t MMU::getByte(uint16_t address)
                 if (address < 0xFEA0)
                 {
                     // OAM
-                    return this->temp[address];
+                    return this->oam->getByte(address);
                 }
 
                 return 0;
@@ -83,13 +87,10 @@ uint8_t MMU::getByte(uint16_t address)
                 {
                     return this->ioRegisters->getByte(address); // I/O Registers
                 }
-
-                if (address < 0xFFFF)
+                else
                 {
-                    return this->temp[address]; // High RAM
+                    return this->highRAM[address - 0xFF80]; // High RAM and Interrupts Enable Register (0xFFFF)
                 }
-
-                return this->temp[address]; // 0xFFFF -	Interrupts Enable Register
           }
     }
 
@@ -150,7 +151,7 @@ void MMU::setByte(uint16_t address, uint8_t value)
                   if (address < 0xFEA0)
                   {
                       // OAM
-                      this->temp[address] = value;
+                      return this->oam->setByte(address, value);
                   }
                   break;
               case 0xFF00:
@@ -158,13 +159,9 @@ void MMU::setByte(uint16_t address, uint8_t value)
                   {
                       this->ioRegisters->setByte(address, value); // I/O Registers
                   }
-                  else if (address < 0xFFFF)
-                  {
-                      this->temp[address] = value; // High RAM
-                  }
                   else
                   {
-                      this->temp[address] = value; // 0xFFFF -	Interrupts Enable Register
+                      this->highRAM[address - 0xFF80] = value; // High RAM and Interrupts Enable Register (0xFFFF)
                   }
             }
     }
@@ -174,6 +171,31 @@ void MMU::setByte(uint16_t address, uint8_t value)
 void MMU::setByteInternal(uint16_t address, uint8_t value)
 {
     if (address >= 0xFF00 || address < 0xFF80) { this->ioRegisters->setByteInternal(address, value); }
+}
+
+MemorySpace* MMU::getCartridge()
+{
+    return this->cartridge;
+}
+
+MemorySpace* MMU::getIORegisters()
+{
+    return this->ioRegisters;
+}
+
+MemorySpace* MMU::getOAM()
+{
+    return this->oam;
+}
+
+MemorySpace* MMU::getVideoRam()
+{
+    return this->videoRam;
+}
+
+MemorySpace* MMU::getWorkingRam()
+{
+    return this->workingRam;
 }
 
 }

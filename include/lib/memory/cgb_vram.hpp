@@ -1,6 +1,7 @@
 #ifndef _MEMORY_CGB_VIDEO_RAM_H_
 #define _MEMORY_CGB_VIDEO_RAM_H_
 
+#include "lib/graphic/lcd_status_util.hpp"
 #include "lib/memory/memory_location.hpp"
 #include "lib/memory/memory_space.hpp"
 

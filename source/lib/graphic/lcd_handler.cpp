@@ -2,12 +2,12 @@
 
 namespace gb_lib {
 
-LCDHandler::LCDHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, bool isCGB)
+LCDHandler::LCDHandler(InterruptHandler* interruptHandler, MemorySpace* ioRegisters, bool isCGB)
 {
     this->cpuCycle = 0;
     this->interruptHandler = interruptHandler;
     this->isCGB = isCGB;
-    this->mmu = mmu;
+    this->ioRegisters = ioRegisters;
 }
 
 void LCDHandler::updateLCD(uint32_t consumedCpuCycle)
@@ -15,7 +15,7 @@ void LCDHandler::updateLCD(uint32_t consumedCpuCycle)
     // might return LCDC here instead of re-fetching it from mmu
     this->handleLCDStatus();
 
-    uint8_t lcdControl = this->mmu->getByte(LCDC);
+    uint8_t lcdControl = this->ioRegisters->getByte(LCDC);
 
     if (!this->isLCDEnabled(lcdControl))
     {
@@ -28,7 +28,7 @@ void LCDHandler::updateLCD(uint32_t consumedCpuCycle)
     {
         this->cpuCycle -= this->cyclePerScanLine;
 
-        uint8_t currentScanline = this->mmu->getByte(LY) + 1;
+        uint8_t currentScanline = this->ioRegisters->getByte(LY) + 1;
 
         if (currentScanline < 144)
         {
@@ -43,7 +43,7 @@ void LCDHandler::updateLCD(uint32_t consumedCpuCycle)
             currentScanline = 0;
         }
 
-        this->mmu->setByteInternal(LY, currentScanline);
+        this->ioRegisters->setByteInternal(LY, currentScanline);
     }
 }
 
@@ -72,38 +72,29 @@ ObjComposition LCDHandler::getObjComposition(uint8_t lcdc)
     return static_cast<ObjComposition>(lcdc & 4);
 }
 
-LCDMode LCDHandler::getLCDMode(uint8_t stat)
-{
-    return static_cast<LCDMode>(stat & 3);
-}
-
-void LCDHandler::setLCDMode(uint8_t stat, LCDMode lcdMode)
-{
-    this->mmu->setByteInternal(STAT, (stat & 0xFC) | static_cast<uint8_t>(lcdMode));
-}
-
 // TODO - refactor?
 void LCDHandler::handleLCDStatus()
 {
-    uint8_t lcdControl = this->mmu->getByte(LCDC);
-    uint8_t lcdStatus = this->mmu->getByte(STAT);
+    LCDStatusUtil lcdStatusUtil;
+    uint8_t lcdControl = this->ioRegisters->getByte(LCDC);
+    uint8_t lcdStatus = this->ioRegisters->getByte(STAT);
 
     // need to reset everything if lcd is disabled
     if (!this->isLCDEnabled(lcdControl))
     {
         this->cpuCycle = 0;
-        this->mmu->setByteInternal(LY, 0);
-        this->setLCDMode(lcdStatus, LCDMode::VBLANK);
+        this->ioRegisters->setByteInternal(LY, 0);
+        lcdStatusUtil.setLCDMode(this->ioRegisters, lcdStatus, LCDMode::VBLANK);
 
         return;
     }
 
     // Adjust the status to match the phase the rendering cycle
-    LCDMode currentMode = this->getLCDMode(lcdStatus);
+    LCDMode currentMode = lcdStatusUtil.getLCDMode(lcdStatus);
     LCDMode newMode = currentMode;
     bool requiresInterrupt = false;
 
-    uint8_t currentScanline = this->mmu->getByte(LY);
+    uint8_t currentScanline = this->ioRegisters->getByte(LY);
 
     if (currentScanline >=  144)
     {
@@ -131,7 +122,7 @@ void LCDHandler::handleLCDStatus()
         this->interruptHandler->requestInterrupt(Interrupt::LCD);
     }
 
-    if (currentScanline == this->mmu->getByte(LYC))
+    if (currentScanline == this->ioRegisters->getByte(LYC))
     {
         lcdStatus = BitUtil::setBit(lcdStatus, 2);
 
@@ -147,7 +138,7 @@ void LCDHandler::handleLCDStatus()
     }
 
     // update status in memory
-    this->setLCDMode(lcdStatus, newMode);
+    lcdStatusUtil.setLCDMode(this->ioRegisters, lcdStatus, newMode);
 }
 
 }
