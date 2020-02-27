@@ -27,6 +27,7 @@ void GameBoy::stepInstruction()
     uint32_t consumedCpuCycle = cpu->tick();
     this->cpuCycle += consumedCpuCycle;
 
+    this->dmaHandler->tick(consumedCpuCycle);
     this->timerHandler->updateTimers(consumedCpuCycle);
     this->lcdHandler->updateLCD(consumedCpuCycle);
     // updateAudio(consumedCpuCycle);

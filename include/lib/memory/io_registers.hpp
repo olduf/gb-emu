@@ -1,6 +1,8 @@
 #ifndef _IO_REGISTERS_H_
 #define _IO_REGISTERS_H_
 
+#include "lib/memory/dma/dma_mediator.hpp"
+#include "lib/memory/memory_location.hpp"
 #include "lib/memory/memory_space.hpp"
 
 namespace gb_lib {
@@ -8,13 +10,14 @@ namespace gb_lib {
 class IORegisters : public MemorySpace
 {
 public:
-    IORegisters(bool isCGB);
+    IORegisters(DMAMediator* dmaMediator, bool isCGB);
 
     uint8_t getByte(uint16_t address);
     void setByte(uint16_t address, uint8_t value);
     void setByteInternal(uint16_t address, uint8_t value);
 
 private:
+    DMAMediator* dmaMediator;
     uint8_t registers[0x80] = {
         0xCF, 0x00, 0x7E, 0xFF, 0xD3, 0x00, 0x00, 0xF8,
         0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE1,

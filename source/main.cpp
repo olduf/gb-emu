@@ -10,12 +10,14 @@
 #include <string>
 
 #include "lib/cpu/cpu.hpp"
+#include "lib/cpu/instructions.hpp"
 #include "lib/cpu/interrupt_handler.hpp"
 #include "lib/cpu/registers.hpp"
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/graphic/lcd_handler.hpp"
+#include "lib/memory/dma/dma_handler.hpp"
 #include "lib/memory/mmu_factory.hpp"
-#include "lib/cpu/instructions.hpp"
+#include "lib/timer_handler.hpp"
 
 int defaultMain();
 int sfmlMain();
@@ -29,14 +31,17 @@ uint8_t* rom = nullptr;
 uint32_t romSize = loadFile("./roms/tetris.gb", &rom);
 uint32_t cpuCycle = 0;
 
+gb_lib::DMAMediator dmaMediator;
 gb_lib::MMUFactory mmuFactory;
-gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, false);
+gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, false);
 gb_lib::Registers registers;
 gb_lib::SpeedModeHandler speedModeHandler(mmu);
+gb_lib::DMAHandler dmaHandler(&dmaMediator, mmu, &speedModeHandler);
 
 gb_lib::InterruptHandler interruptHandler(mmu, &registers);
 gb_lib::Cpu cpu(&interruptHandler, mmu, &registers, &speedModeHandler);
 gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu->getIORegisters(), false);
+gb_lib::TimerHandler timerHandler(&interruptHandler, mmu, false);
 
 uint8_t code = 0;
 gb_lib::Instruction* instruction = nullptr;
@@ -88,7 +93,19 @@ void tickProgram()
         std::cout << getProgramStateString(instruction, registers);
     }
 
+    if (registers.getPC() == 0xFFBF)
+    {
+        printf("OAM\n");
+        for (uint16_t i = 0; i < 160; ++i)
+        {
+            printf("0x%02X ", mmu->getByte(gb_lib::OAM_START + i));
+        }
+        printf("\n");
+    }
+
     uint32_t consumedCpuCycle = cpu.tick();
+    dmaHandler.tick(consumedCpuCycle);
+    timerHandler.updateTimers(consumedCpuCycle);
     lcdHandler.updateLCD(consumedCpuCycle);
 
     cpuCycle += consumedCpuCycle;

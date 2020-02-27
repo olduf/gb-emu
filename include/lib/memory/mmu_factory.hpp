@@ -15,7 +15,7 @@ namespace gb_lib {
 class MMUFactory
 {
 public:
-    MMU* create(uint8_t* rom, uint32_t romSize, bool isCGB);
+    MMU* create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator,bool isCGB);
 
 private:
     CartridgeFactory cartridgeFactory;

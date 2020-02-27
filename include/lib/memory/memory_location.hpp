@@ -11,6 +11,8 @@ namespace gb_lib {
     const uint16_t SERIAL_INTERRUPT_HANDLER = 0x0058;
     const uint16_t INPUT_INTERRUPT_HANDLER = 0x0060;
 
+    const uint16_t OAM_START = 0xFE00;
+
     // Control registers
     const uint16_t P1 = 0xFF00;
     const uint16_t SB = 0xFF01;

@@ -2,10 +2,10 @@
 
 namespace gb_lib {
 
-MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, bool isCGB)
+MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, bool isCGB)
 {
     MemorySpace* cartridge = this->cartridgeFactory.create(rom, romSize);
-    MemorySpace* ioRegisters = new IORegisters(isCGB);
+    MemorySpace* ioRegisters = new IORegisters(dmaMediator, isCGB);
     MemorySpace* oam = new OAM(ioRegisters);
 
     MemorySpace* videoRam = nullptr;

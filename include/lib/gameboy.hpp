@@ -4,9 +4,9 @@
 #include "lib/cpu/cpu.hpp"
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/graphic/lcd_handler.hpp"
+#include "lib/memory/dma/dma_handler.hpp"
 #include "lib/memory/mmu_factory.hpp"
 #include "lib/timer_handler.hpp"
-
 namespace gb_lib {
 
 class GameBoy
@@ -25,6 +25,7 @@ public:
 private:
     // audio processing unit
     Cpu* cpu;
+    DMAHandler* dmaHandler;
     LCDHandler* lcdHandler;
     MemorySpace* mmu;
     // pixel processing unit

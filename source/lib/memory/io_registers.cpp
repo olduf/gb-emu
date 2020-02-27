@@ -2,8 +2,10 @@
 
 namespace gb_lib {
 
-IORegisters::IORegisters(bool isCGB)
+IORegisters::IORegisters(DMAMediator* dmaMediator, bool isCGB)
 {
+    this->dmaMediator = dmaMediator;
+
     if (isCGB)
     {
         uint8_t cgbInitialValues[0x80] = {
@@ -41,6 +43,11 @@ uint8_t IORegisters::getByte(uint16_t address)
 void IORegisters::setByte(uint16_t address, uint8_t value)
 {
     this->registers[address & 0x00FF] = value;
+
+    if (address == DMA)
+    {
+        this->dmaMediator->requestTransfer(value);
+    }
 }
 
 void IORegisters::setByteInternal(uint16_t address, uint8_t value)
