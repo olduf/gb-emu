@@ -13,7 +13,7 @@ public:
     void setByte(uint16_t address, uint8_t value);
 
 private:
-    uint8_t highRam[0x7F] = {};
+    uint8_t highRam[0x8F] = {};
 };
 
 }
