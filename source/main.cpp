@@ -16,6 +16,8 @@
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/graphic/lcd_handler.hpp"
 #include "lib/memory/dma/dma_handler.hpp"
+#include "lib/memory/dma/hdma_handler.hpp"
+#include "lib/memory/dma/null_mediator.hpp"
 #include "lib/memory/mmu_factory.hpp"
 #include "lib/timer_handler.hpp"
 
@@ -32,11 +34,14 @@ uint32_t romSize = loadFile("./roms/tetris.gb", &rom);
 uint32_t cpuCycle = 0;
 
 gb_lib::DMAMediator dmaMediator;
+gb_lib::NullMediator hdmaMediator;
 gb_lib::MMUFactory mmuFactory;
-gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, false);
+gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, &hdmaMediator, false);
 gb_lib::Registers registers;
 gb_lib::SpeedModeHandler speedModeHandler(mmu);
-gb_lib::DMAHandler dmaHandler(&dmaMediator, mmu, &speedModeHandler);
+gb_lib::DMAHandler dmaHandler(mmu, &dmaMediator, &speedModeHandler);
+gb_lib::HDMAHandler hdmaHandler(mmu, &hdmaMediator, &speedModeHandler);
+
 
 gb_lib::InterruptHandler interruptHandler(mmu, &registers);
 gb_lib::Cpu cpu(&interruptHandler, mmu, &registers, &speedModeHandler);
@@ -103,7 +108,17 @@ void tickProgram()
         printf("\n");
     }
 
-    uint32_t consumedCpuCycle = cpu.tick();
+    uint32_t consumedCpuCycle = 4;
+
+    if (hdmaHandler.isTransferInProgress())
+    {
+        hdmaHandler.tick(consumedCpuCycle);
+    }
+    else
+    {
+        consumedCpuCycle = cpu.tick();
+    }
+
     dmaHandler.tick(consumedCpuCycle);
     timerHandler.updateTimers(consumedCpuCycle);
     lcdHandler.updateLCD(consumedCpuCycle);

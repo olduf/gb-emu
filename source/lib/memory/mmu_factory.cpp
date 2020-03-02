@@ -5,11 +5,11 @@
 
 namespace gb_lib {
 
-MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, bool isCGB)
+MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, bool isCGB)
 {
     MemorySpace* cartridge = this->cartridgeFactory.create(rom, romSize);
     MemorySpace* highRam = this->createHighRam(isCGB);
-    MemorySpace* ioRegisters = this->createIORegisters(dmaMediator, isCGB);
+    MemorySpace* ioRegisters = this->createIORegisters(dmaMediator, hdmaMediator, isCGB);
     MemorySpace* oam = new OAM(ioRegisters);
 
     MemorySpace* unusedMemoryFEA0_FEFF = nullptr;
@@ -91,9 +91,9 @@ MemorySpace* MMUFactory::createHighRam(bool isCGB)
     return highRam;
 }
 
-MemorySpace* MMUFactory::createIORegisters(DMAMediator* dmaMediator, bool isCGB)
+MemorySpace* MMUFactory::createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, bool isCGB)
 {
-    MemorySpace* ioRegisters = new IORegisters(dmaMediator, isCGB);
+    MemorySpace* ioRegisters = new IORegisters(dmaMediator, hdmaMediator, isCGB);
 
     if (isCGB)
     {

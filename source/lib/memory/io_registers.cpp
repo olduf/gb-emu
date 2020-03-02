@@ -2,13 +2,15 @@
 
 namespace gb_lib {
 
-IORegisters::IORegisters(DMAMediator* dmaMediator, bool isCGB)
+IORegisters::IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, bool isCGB)
 {
     this->dmaMediator = dmaMediator;
+    this->hdmaMediator = hdmaMediator;
 
     // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
     // 9.6. FF55H - HDMA5 - GBC Mode - HDMA Length/Mode/Start (R/W)
-    // Returns FFh in DMG and GBC in DMG mode
+    // Returns FFh in DMG and GBC in DMG mode.
+    // In GBC mode, returns 1 if DMA is in progress, 0 otherwise.
     // TODO - revisit, might split into 2 files
     if (!isCGB)
     {
@@ -112,7 +114,7 @@ uint8_t IORegisters::getByte(uint16_t address)
             return 0xFF;
             break;
         case 0x55:
-            return this->registers[effectiveAddress] | this->FF55Mask;
+            return (this->hdmaMediator->isTransferInProgress() ? 1 : 0) | this->FF55Mask;
             break;
         case 0x56:
         case 0x57:
@@ -254,7 +256,7 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
             break;
         case 0x46: // DMA
             this->registers[effectiveAddress] = value;
-            this->dmaMediator->requestTransfer(value);
+            this->dmaMediator->requestTransfer(true);
             break;
         case 0x47:
         case 0x48:
@@ -271,6 +273,9 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
         case 0x53:
         case 0x54:
         case 0x55:
+            this->hdmaMediator->requestTransfer(true);
+            this->registers[effectiveAddress] = value;
+            break;
         case 0x56:
         case 0x57:
         case 0x58:
@@ -317,7 +322,6 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
             break;
     }
 }
-
 
 void IORegisters::setByteInternal(uint16_t address, uint8_t value)
 {

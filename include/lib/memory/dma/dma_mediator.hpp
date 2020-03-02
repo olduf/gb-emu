@@ -8,16 +8,15 @@ namespace gb_lib {
 class DMAMediator
 {
 public:
-    DMAMediator();
-
+    virtual void requestTransfer(bool transferRequested);
     bool isTransferRequested();
-    void requestTransfer(uint8_t source);
 
-    uint16_t getSource();
+    bool isTransferInProgress();
+    void setTransferInProgress(bool transferInProgress);
 
-private:
-    bool transferRequested;
-    uint16_t source;
+protected:
+    bool transferRequested = false;
+    bool transferInProgress = false;
 };
 
 }

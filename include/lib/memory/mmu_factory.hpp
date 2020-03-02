@@ -18,11 +18,11 @@ namespace gb_lib {
 class MMUFactory
 {
 public:
-    MMU* create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, bool isCGB);
+    MMU* create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, bool isCGB);
 
 private:
     MemorySpace* createHighRam(bool isCGB);
-    MemorySpace* createIORegisters(DMAMediator* dmaMediator, bool isCGB);
+    MemorySpace* createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, bool isCGB);
 
 private:
     CartridgeFactory cartridgeFactory;

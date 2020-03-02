@@ -2,10 +2,9 @@
 
 namespace gb_lib {
 
-DMAMediator::DMAMediator()
+void DMAMediator::requestTransfer(bool transferRequested)
 {
-    this->transferRequested = false;
-    this->source = 0;
+    this->transferRequested = transferRequested;
 }
 
 bool DMAMediator::isTransferRequested()
@@ -13,20 +12,14 @@ bool DMAMediator::isTransferRequested()
     return this->transferRequested;
 }
 
-void DMAMediator::requestTransfer(uint8_t source)
+bool DMAMediator::isTransferInProgress()
 {
-    if (!this->transferRequested)
-    {
-        this->transferRequested = true;
-        this->source = static_cast<uint16_t>(source << 8);
-    }
+    return this->transferInProgress;
 }
 
-uint16_t DMAMediator::getSource()
+void DMAMediator::setTransferInProgress(bool transferInProgress)
 {
-    this->transferRequested = false;
-
-    return this->source;
+    this->transferInProgress = transferInProgress;
 }
 
 }

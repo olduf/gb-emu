@@ -9,6 +9,33 @@ GameBoy::GameBoy(std::string romPath)
     MMUFactory mmuFactory;
 }
 
+GameBoy::~GameBoy()
+{
+  delete this->cpu;
+  this->cpu = nullptr;
+
+  delete this->dmaHandler;
+  this->dmaHandler = nullptr;
+
+  delete this->hdmaHandler;
+  this->hdmaHandler = nullptr;
+
+  delete this->lcdHandler;
+  this->lcdHandler = nullptr;
+
+  delete this->mmu;
+  this->mmu = nullptr;
+
+  delete this->registers;
+  this->registers = nullptr;
+
+  delete this->speedModeHandler;
+  this->speedModeHandler = nullptr;
+
+  delete this->timerHandler;
+  this->timerHandler = nullptr;
+}
+
 void GameBoy::stepFrame()
 {
     while (this->cpuCycle < (CPU_CYCLES_FOR_FRAME * static_cast<uint32_t>(this->speedModeHandler->getSpeedMode())))
@@ -23,14 +50,23 @@ void GameBoy::stepFrame()
 
 void GameBoy::stepInstruction()
 {
-    // need to handle DMA
-    uint32_t consumedCpuCycle = cpu->tick();
-    this->cpuCycle += consumedCpuCycle;
+    uint32_t consumedCpuCycle = 4;
+
+    if (this->hdmaHandler->isTransferInProgress())
+    {
+        this->hdmaHandler->tick(consumedCpuCycle);
+    }
+    else
+    {
+        consumedCpuCycle = cpu->tick();
+    }
 
     this->dmaHandler->tick(consumedCpuCycle);
     this->timerHandler->updateTimers(consumedCpuCycle);
     this->lcdHandler->updateLCD(consumedCpuCycle);
     // updateAudio(consumedCpuCycle);
+
+    this->cpuCycle += consumedCpuCycle;
 }
 
 void GameBoy::reset()

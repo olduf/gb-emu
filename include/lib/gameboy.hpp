@@ -5,6 +5,7 @@
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/graphic/lcd_handler.hpp"
 #include "lib/memory/dma/dma_handler.hpp"
+#include "lib/memory/dma/hdma_handler.hpp"
 #include "lib/memory/mmu_factory.hpp"
 #include "lib/timer_handler.hpp"
 namespace gb_lib {
@@ -13,6 +14,7 @@ class GameBoy
 {
 public:
     GameBoy(std::string romPath); // graphic, audio
+    ~GameBoy();
 
     void stepFrame();
 
@@ -26,6 +28,7 @@ private:
     // audio processing unit
     Cpu* cpu;
     DMAHandler* dmaHandler;
+    HDMAHandler* hdmaHandler;
     LCDHandler* lcdHandler;
     MemorySpace* mmu;
     // pixel processing unit

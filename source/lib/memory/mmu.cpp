@@ -105,13 +105,15 @@ MemorySpace* MMU::getMemorySpace(uint16_t& address)
         case 0x5000:
         case 0x6000:
         case 0x7000:
-        case 0xA000:
-        case 0xB000:
             return this->cartridge;
         // VRAM
         case 0x8000:
         case 0x9000:
             return this->videoRam;
+        // external ram
+        case 0xA000:
+        case 0xB000:
+            return this->cartridge;
         // GameBoy working ram
         case 0xC000:
         case 0xD000:

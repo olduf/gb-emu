@@ -11,15 +11,14 @@ namespace gb_lib {
 class DMAHandler
 {
 public:
-    DMAHandler(DMAMediator* dmaMediator, MemorySpace* mmu, SpeedModeHandler* speedModeHandler);
+    DMAHandler(MemorySpace* mmu, DMAMediator* dmaMediator, SpeedModeHandler* speedModeHandler);
 
     void tick(uint32_t consumedCpuCycle);
     void setUpTransfer();
 
 private:
-    bool transferInProgress;
-    DMAMediator* dmaMediator;
     MemorySpace* mmu;
+    DMAMediator* dmaMediator;
     SpeedModeHandler* speedModeHandler;
     uint16_t source;
     uint32_t cpuCycle;
