@@ -30,11 +30,11 @@ private:
     MemorySpace* mmu;
     SpeedModeHandler* speedModeHandler;
     uint8_t transferedBytesInHBLANK;
-    uint8_t numberOfBytesToTransfer;
     uint16_t source;
     uint16_t destination;
     uint32_t cpuCycle;
     uint32_t neededCpuCycle;
+    uint32_t numberOfBytesToTransfer;
 };
 
 }

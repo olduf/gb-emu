@@ -2,6 +2,7 @@
 
 namespace gb_lib {
 
+// TODO - refactor this atrocity
 HDMAHandler::HDMAHandler(MemorySpace* mmu, DMAMediator* hdmaMediator, SpeedModeHandler* speedModeHandler)
 {
     this->transferInProgress = false;
@@ -40,9 +41,17 @@ void HDMAHandler::tick(uint32_t consumedCpuCycle)
             this->source++;
             this->destination++;
 
+            // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
+            // 9.6.2 - Reading from the HDMA5 register will return the remaining
+            // length (divided by 16, minus 1). A value of FFh indicates that the transfer has completed.
             if (this->numberOfBytesToTransfer == 0)
             {
+                this->mmu->setByteInternal(HDMA5, 0xFF);
                 this->hdmaMediator->setTransferInProgress(false);
+            }
+            else
+            {
+                this->mmu->setByteInternal(HDMA5, 0x80 | (static_cast<uint8_t>(this->numberOfBytesToTransfer >> 4) - 1));
             }
         }
     }
@@ -115,9 +124,10 @@ void HDMAHandler::setInitialTransferState()
         this->transferType = static_cast<HDMATransferType>(hdma5 & 0x80);
         this->numberOfBytesToTransfer = ((hdma5 & 0x7F) + 1) * 16;
 
-        this->cpuCycle = 0;
+        // transfer always takes the same time, speed mode does not matter.
         this->neededCpuCycle = 4 + (this->numberOfBytesToTransfer * 2 * static_cast<uint32_t>(this->speedModeHandler->getSpeedMode()));
         this->transferedBytesInHBLANK = 0;
+        this->cpuCycle = 0;
 
         this->hdmaMediator->setTransferInProgress(true);
     }
