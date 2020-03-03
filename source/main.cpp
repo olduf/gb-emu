@@ -14,6 +14,7 @@
 #include "lib/cpu/interrupt_handler.hpp"
 #include "lib/cpu/registers.hpp"
 #include "lib/cpu/speedmode_handler.hpp"
+#include "lib/gameboy.hpp"
 #include "lib/graphic/lcd_handler.hpp"
 #include "lib/memory/dma/dma_handler.hpp"
 #include "lib/memory/dma/hdma_handler.hpp"
@@ -46,10 +47,11 @@ gb_lib::HDMAHandler hdmaHandler(mmu, &hdmaMediator, &speedModeHandler);
 gb_lib::InterruptHandler interruptHandler(mmu, &registers);
 gb_lib::Cpu cpu(&interruptHandler, mmu, &registers, &speedModeHandler);
 gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu->getIORegisters(), false);
-gb_lib::TimerHandler timerHandler(&interruptHandler, mmu, false);
+gb_lib::TimerHandler timerHandler(&interruptHandler, mmu);
 
 uint8_t code = 0;
 gb_lib::Instruction* instruction = nullptr;
+//gb_lib::GameBoy gb("./roms/tetris.gb");
 
 int main()
 {

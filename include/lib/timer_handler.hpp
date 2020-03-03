@@ -13,7 +13,7 @@ namespace gb_lib {
 class TimerHandler
 {
 public:
-    TimerHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, bool isCGB);
+    TimerHandler(InterruptHandler* interruptHandler, MemorySpace* mmu);
 
     void updateTimers(uint32_t consumedCpuCycle);
 

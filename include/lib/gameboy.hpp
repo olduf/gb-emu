@@ -2,21 +2,27 @@
 #define _GAMEBOY_H_
 
 #include "lib/cpu/cpu.hpp"
+#include "lib/cpu/interrupt_handler.hpp"
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/graphic/lcd_handler.hpp"
 #include "lib/memory/dma/dma_handler.hpp"
 #include "lib/memory/dma/hdma_handler.hpp"
 #include "lib/memory/mmu_factory.hpp"
 #include "lib/timer_handler.hpp"
+
+// temporary
+#include <cstdio>
+
 namespace gb_lib {
 
 class GameBoy
 {
 public:
-    GameBoy(std::string romPath); // graphic, audio
+    GameBoy(const char* romPath); // graphic, audio
     ~GameBoy();
 
     void stepFrame();
+    void stepInstruction();
 
     void reset();
     void stop();
@@ -28,11 +34,14 @@ private:
     // audio processing unit
     Cpu* cpu;
     DMAHandler* dmaHandler;
+    DMAMediator dmaMediator;
+    DMAMediator hdmaMediator;
     HDMAHandler* hdmaHandler;
+    InterruptHandler* interruptHandler;
     LCDHandler* lcdHandler;
     MemorySpace* mmu;
     // pixel processing unit
-    Registers* registers;
+    Registers registers;
     SpeedModeHandler* speedModeHandler;
     TimerHandler* timerHandler;
     uint32_t cpuCycle;
@@ -42,7 +51,11 @@ private:
 
 private:
     void initialize();
-    void stepInstruction();
+
+// temporary
+private:
+    uint8_t* rom;
+    uint32_t loadFile(const char* romPath);
 
 };
 

@@ -2,7 +2,7 @@
 
 namespace gb_lib {
 
-TimerHandler::TimerHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, bool isCGB)
+TimerHandler::TimerHandler(InterruptHandler* interruptHandler, MemorySpace* mmu)
 {
     this->interruptHandler = interruptHandler;
     this->mmu = mmu;
