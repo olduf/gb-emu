@@ -40,6 +40,7 @@ private:
     InterruptHandler* interruptHandler;
     LCDHandler* lcdHandler;
     MemorySpace* mmu;
+    PPU* ppu;
     // pixel processing unit
     Registers registers;
     SpeedModeHandler* speedModeHandler;

@@ -16,6 +16,7 @@
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/gameboy.hpp"
 #include "lib/graphic/lcd_handler.hpp"
+#include "lib/graphic/ppu.hpp"
 #include "lib/memory/dma/dma_handler.hpp"
 #include "lib/memory/dma/hdma_handler.hpp"
 #include "lib/memory/dma/null_mediator.hpp"
@@ -30,7 +31,7 @@ uint32_t loadFile(const char* filePath, uint8_t** buffer);
 void tickProgram();
 
 uint8_t* rom = nullptr;
-//uint32_t romSize = loadFile("./roms/test/cpi/instrs/cpu_instrs.gb", &rom);
+//uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/07-jr,jp,call,ret,rst.gb", &rom);
 uint32_t romSize = loadFile("./roms/tetris.gb", &rom);
 uint32_t cpuCycle = 0;
 
@@ -42,11 +43,12 @@ gb_lib::Registers registers;
 gb_lib::SpeedModeHandler speedModeHandler(mmu);
 gb_lib::DMAHandler dmaHandler(mmu, &dmaMediator, &speedModeHandler);
 gb_lib::HDMAHandler hdmaHandler(mmu, &hdmaMediator, &speedModeHandler);
+gb_lib::PPU ppu(mmu, nullptr);
 
 
 gb_lib::InterruptHandler interruptHandler(mmu, &registers);
 gb_lib::Cpu cpu(&interruptHandler, mmu, &registers, &speedModeHandler);
-gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu->getIORegisters(), false);
+gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu->getIORegisters(), &ppu, false);
 gb_lib::TimerHandler timerHandler(&interruptHandler, mmu);
 
 uint8_t code = 0;
@@ -91,8 +93,7 @@ void tickProgram()
     ss << "\n";
     std::cout << ss.str();
 
-
-    if (registers.getPC() > 0x27A1)
+    if (registers.getPC() == 0x0038)
     {
         std::string input;
         std::getline(std::cin, input);

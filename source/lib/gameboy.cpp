@@ -25,7 +25,9 @@ GameBoy::GameBoy(const char* romPath)
     this->dmaHandler = new DMAHandler(this->mmu, &(this->dmaMediator), this->speedModeHandler);
     this->hdmaHandler = new HDMAHandler(this->mmu, &(this->dmaMediator), this->speedModeHandler);
     this->cpu = new Cpu(this->interruptHandler, this->mmu, &(this->registers), this->speedModeHandler);
-    this->lcdHandler = new LCDHandler(this->interruptHandler, this->mmu, isCGB);
+    this->ppu = new PPU(this->mmu, nullptr);
+
+    this->lcdHandler = new LCDHandler(this->interruptHandler, this->mmu, this->ppu, isCGB);
     this->timerHandler = new TimerHandler(this->interruptHandler, this->mmu);
 }
 
@@ -51,6 +53,9 @@ GameBoy::~GameBoy()
 
     delete this->mmu;
     this->mmu = nullptr;
+
+    delete this->ppu;
+    this->ppu = nullptr;
 
     delete this->speedModeHandler;
     this->speedModeHandler = nullptr;

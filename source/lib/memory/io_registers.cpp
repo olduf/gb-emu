@@ -114,7 +114,7 @@ uint8_t IORegisters::getByte(uint16_t address)
             return 0xFF;
             break;
         case 0x55:
-            return (this->hdmaMediator->isTransferInProgress() ? 1 : 0) | this->FF55Mask;
+            return (this->hdmaMediator->isTransferInProgress() ? 0x80 : 0) | this->FF55Mask;
             break;
         case 0x56:
         case 0x57:

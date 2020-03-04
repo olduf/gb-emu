@@ -2,7 +2,6 @@
 #define _GRAPHIC_LCD_STATUS_UTIL_H_
 
 #include "lib/graphic/lcd_mode.hpp"
-#include "lib/graphic/obj_composition.hpp"
 #include "lib/memory/memory_location.hpp"
 #include "lib/memory/memory_space.hpp"
 

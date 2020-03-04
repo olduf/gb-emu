@@ -2,12 +2,13 @@
 
 namespace gb_lib {
 
-LCDHandler::LCDHandler(InterruptHandler* interruptHandler, MemorySpace* ioRegisters, bool isCGB)
+LCDHandler::LCDHandler(InterruptHandler* interruptHandler, MemorySpace* ioRegisters, PPU* ppu, bool isCGB)
 {
     this->cpuCycle = 0;
     this->interruptHandler = interruptHandler;
-    this->isCGB = isCGB;
     this->ioRegisters = ioRegisters;
+    this->ppu = ppu;
+    this->isCGB = isCGB;
 }
 
 void LCDHandler::updateLCD(uint32_t consumedCpuCycle)
@@ -32,7 +33,15 @@ void LCDHandler::updateLCD(uint32_t consumedCpuCycle)
 
         if (currentScanline < 144)
         {
-            // draw line
+            this->ppu->drawScanLine(
+                this->areBackgroundEnabled(lcdControl),
+                this->areOBJEnabled(lcdControl),
+                this->areWindowEnabled(lcdControl),
+                this->getObjComposition(lcdControl),
+                this->getBackgroundTileMapAddress(lcdControl),
+                this->getTileDataAddress(lcdControl),
+                this->getWindowTileMapAddress(lcdControl),
+                currentScanline);
         }
         else if (currentScanline == 144)
         {
@@ -54,22 +63,52 @@ bool LCDHandler::areBackgroundEnabled(uint8_t lcdc)
 
 bool LCDHandler::areOBJEnabled(uint8_t lcdc)
 {
-    return (lcdc & 2) != 0;
+    return BitUtil::getBit(lcdc, 1);
 }
 
 bool LCDHandler::areWindowEnabled(uint8_t lcdc)
 {
-    return (lcdc & 0x20) != 0;
+    return BitUtil::getBit(lcdc, 5);
 }
 
 bool LCDHandler::isLCDEnabled(uint8_t lcdc)
 {
-    return (lcdc & 0x80) != 0;
+    return BitUtil::getBit(lcdc, 7);
 }
 
 ObjComposition LCDHandler::getObjComposition(uint8_t lcdc)
 {
     return static_cast<ObjComposition>(lcdc & 4);
+}
+
+uint16_t LCDHandler::getBackgroundTileMapAddress(uint8_t lcdc)
+{
+    if (BitUtil::getBit(lcdc, 3))
+    {
+        return 0x9C00;
+    }
+
+    return 0x9800;
+}
+
+uint16_t LCDHandler::getTileDataAddress(uint8_t lcdc)
+{
+    if (BitUtil::getBit(lcdc, 4))
+    {
+        return 0x8000;
+    }
+
+    return 0x8800;
+}
+
+uint16_t LCDHandler::getWindowTileMapAddress(uint8_t lcdc)
+{
+    if (BitUtil::getBit(lcdc, 6))
+    {
+        return 0x9C00;
+    }
+
+    return 0x9800;
 }
 
 // TODO - refactor?
