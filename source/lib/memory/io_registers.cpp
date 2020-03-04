@@ -249,7 +249,15 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
             this->registers[effectiveAddress] = value;
             break;
         case 0x44: // LY
-            this->registers[effectiveAddress] = 0;
+            {
+                // http://forums.nesdev.com/viewtopic.php?f=20&t=16434&p=203762#p203762
+                // Any writes to LY while the LCD is enabled are ignored.
+                // When the LCD is disabled, LY is forcibly set to 0, and since it's read-only, the value never changes
+                if (!BitUtil::getBit(this->registers[0x40], 7))
+                {
+                    this->registers[effectiveAddress] = 0;
+                }
+            }
             break;
         case 0x45:
             this->registers[effectiveAddress] = value;
