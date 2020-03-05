@@ -19,12 +19,14 @@ uint32_t Cpu::tick()
     if (instruction == nullptr && this->cpuState == CpuState::INSTRUCTION)
     {
         uint32_t prefixed = 0;
-        uint8_t opCode = mmu->getByte(this->registers->getPC());
+        uint16_t pc = this->registers->getPC();
+        uint8_t opCode = mmu->getByte(pc);
 
         switch (opCode)
         {
             case CB_PREFIX:
                 prefixed = 1;
+                opCode = mmu->getByte(pc + 1);
                 break;
 
             // EI only enable interrupts after the next instruction, that's why we handle it differently

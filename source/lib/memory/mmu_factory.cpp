@@ -59,7 +59,7 @@ MemorySpace* MMUFactory::createHighRam(bool isCGB)
 
         for (uint16_t i = 0; i < 0x80; i++)
         {
-            highRam->setByte(0xFF80 + i, initialValues[i]);
+            highRam->setByteInternal(0xFF80 + i, initialValues[i]);
         }
     }
     else
@@ -85,7 +85,7 @@ MemorySpace* MMUFactory::createHighRam(bool isCGB)
 
         for (uint16_t i = 0; i < 0x80; i++)
         {
-            highRam->setByte(0xFF80 + i, initialValues[i]);
+            highRam->setByteInternal(0xFF80 + i, initialValues[i]);
         }
     }
     return highRam;
@@ -118,7 +118,7 @@ MemorySpace* MMUFactory::createIORegisters(DMAMediator* dmaMediator, DMAMediator
 
         for (uint16_t i = 0; i < 0x80; i++)
         {
-            ioRegisters->setByte(0xFF00 + i, initialValues[i]);
+            ioRegisters->setByteInternal(0xFF00 + i, initialValues[i]);
         }
     }
     else
@@ -144,7 +144,7 @@ MemorySpace* MMUFactory::createIORegisters(DMAMediator* dmaMediator, DMAMediator
 
         for (uint16_t i = 0; i < 0x80; i++)
         {
-            ioRegisters->setByte(0xFF00 + i, initialValues[i]);
+            ioRegisters->setByteInternal(0xFF00 + i, initialValues[i]);
         }
     }
 

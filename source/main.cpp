@@ -69,7 +69,7 @@ void tickProgram()
     code = mmu->getByte(pc);
     if (code == 0xCB)
     {
-        instruction = gb_lib::instructions[1][mmu->getByte(pc) + 1];
+        instruction = gb_lib::instructions[1][mmu->getByte(pc + 1)];
         cb = 1;
     }
     else
@@ -93,22 +93,12 @@ void tickProgram()
     ss << "\n";
     std::cout << ss.str();
 
-    if (registers.getPC() == 0x0038)
+    if (registers.getPC() == 0x02be)
     {
         std::string input;
         std::getline(std::cin, input);
 
         std::cout << getProgramStateString(instruction, registers);
-    }
-
-    if (registers.getPC() == 0xFFBF)
-    {
-        printf("OAM\n");
-        for (uint16_t i = 0; i < 160; ++i)
-        {
-            printf("0x%02X ", mmu->getByte(gb_lib::OAM_START + i));
-        }
-        printf("\n");
     }
 
     uint32_t consumedCpuCycle = 4;
@@ -119,6 +109,7 @@ void tickProgram()
     }
     else
     {
+        //printf("cpu.tick() - IE: 0x%02X, IF: 0x%02X\n", mmu->getByte(gb_lib::IE), mmu->getByte(gb_lib::IF));
         consumedCpuCycle = cpu.tick();
     }
 

@@ -18,8 +18,8 @@ void InterruptHandler::handleEI()
 {
     if (this->needsToEnableInterrupt == true)
     {
-      this->needsToEnableInterrupt = false;
-      this->registers->setIME(true);
+        this->needsToEnableInterrupt = false;
+        this->registers->setIME(true);
   }
 }
 

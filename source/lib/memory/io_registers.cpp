@@ -193,7 +193,11 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
         case 0x0C:
         case 0x0D:
         case 0x0E:
+            this->registers[effectiveAddress] = value;
+            break;
         case 0x0F:
+            this->registers[effectiveAddress] = (this->registers[effectiveAddress] & 0xE0) | (value & 0x1F);
+            break;
         case 0x10:
         case 0x11:
         case 0x12:
