@@ -560,11 +560,11 @@ Instruction* instructions[2][256] = {
 // 3. The high byte of the PC is set to 0, the low byte is set to the address of the handler ($40,$48,$50,$58,$60). This consumes one last machine cycle.
 // The entire ISR should consume a total of 5 machine cycles. This has yet to be tested, but is what the Z80 datasheet implies.
 Instruction* interrupts[] = {
-    InstructionBuilder(0x40, 20, 1, std::string("VBLANK")).load(&InstructionArgument::PC).push().scalar(VBLANK_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
-    InstructionBuilder(0x48, 20, 1, std::string("LCD")).load(&InstructionArgument::PC).push().scalar(LCD_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
-    InstructionBuilder(0x50, 20, 1, std::string("TIMER")).load(&InstructionArgument::PC).push().scalar(TIMER_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
-    InstructionBuilder(0x58, 20, 1, std::string("SERIAL")).load(&InstructionArgument::PC).push().scalar(SERIAL_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
-    InstructionBuilder(0x60, 20, 1, std::string("INPUT")).load(&InstructionArgument::PC).push().scalar(INPUT_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
+    InstructionBuilder(0x40, 20, 0, std::string("VBLANK")).load(&InstructionArgument::PC).push().scalar(VBLANK_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
+    InstructionBuilder(0x48, 20, 0, std::string("LCD")).load(&InstructionArgument::PC).push().scalar(LCD_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
+    InstructionBuilder(0x50, 20, 0, std::string("TIMER")).load(&InstructionArgument::PC).push().scalar(TIMER_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
+    InstructionBuilder(0x58, 20, 0, std::string("SERIAL")).load(&InstructionArgument::PC).push().scalar(SERIAL_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
+    InstructionBuilder(0x60, 20, 0, std::string("INPUT")).load(&InstructionArgument::PC).push().scalar(INPUT_INTERRUPT_HANDLER).store(&InstructionArgument::PC).jump().build(),
 };
 
 }
