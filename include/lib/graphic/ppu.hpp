@@ -24,7 +24,7 @@ public:
         uint8_t scanLine);
 
 private:
-    void drawTiles(uint16_t tileMapAddress, uint16_t tileDataAddress, uint8_t scanLine, uint8_t yPos, bool usingWindow);
+    void drawTiles(uint16_t tileMapAddress, uint16_t tileDataAddress, uint8_t scanLine, uint8_t yPosition, bool usingWindow);
     void drawObjects(ObjComposition objectComposition, uint8_t scanLine);
 
 private:

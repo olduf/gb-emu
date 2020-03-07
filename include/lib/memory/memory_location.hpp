@@ -83,9 +83,16 @@ namespace gb_lib {
     // LY compare - can be used to trigger interrupt when current scanline is at this value
     const uint16_t LYC = 0xFF45;
     const uint16_t DMA = 0xFF46;
-    const uint16_t BGP = 0xFF47;
-    const uint16_t OBP0 = 0xFF48;
-    const uint16_t OBP1 = 0xFF49;
+
+    // Monochrome Palettes - non CGB mode only
+    // Bit 7-6 - Shade for Color Number 3
+    // Bit 5-4 - Shade for Color Number 2
+    // Bit 3-2 - Shade for Color Number 1
+    // Bit 1-0 - Shade for Color Number 0
+    const uint16_t BGP = 0xFF47;  // BG Palette Data (R/W)
+    const uint16_t OBP0 = 0xFF48; // OBP0 - Object Palette 0 Data
+    const uint16_t OBP1 = 0xFF49; // OBP1 - Object Palette 1 Data
+
     const uint16_t WY = 0xFF4A;
     const uint16_t WX = 0xFF4B;
 
@@ -98,8 +105,15 @@ namespace gb_lib {
     const uint16_t HDMA3 = 0xFF53;
     const uint16_t HDMA4 = 0xFF54;
     const uint16_t HDMA5 = 0xFF55;
+
+    // Inrared Communication
+    // Bit 6-7 - Data read-enable flag (00: disable, 11: enable) (Read/Write)
+    // Bit 2-5 - unused
+    // Bit 1 - Read data (0: LED on, 1:LED off (Read/Write)
+    // Bit 1 - Write data (0: LED off, 1:LED on (Read/Write)
     const uint16_t RP = 0xFF56;
 
+    // Color Palettes (CGB only)
     const uint16_t BCPS = 0xFF68;
     const uint16_t BCPB = 0xFF69;
     const uint16_t OCPS = 0xFF6A;
