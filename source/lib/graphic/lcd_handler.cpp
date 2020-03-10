@@ -18,7 +18,7 @@ void LCDHandler::updateLCD(uint32_t consumedCpuCycle)
 
     uint8_t lcdControl = this->ioRegisters->getByte(LCDC);
 
-    if (!this->isLCDEnabled(lcdControl))
+    if (this->isLCDEnabled(lcdControl) == false)
     {
         return;
     }
@@ -30,8 +30,17 @@ void LCDHandler::updateLCD(uint32_t consumedCpuCycle)
         this->cpuCycle -= this->cyclePerScanLine;
 
         uint8_t currentScanline = this->ioRegisters->getByte(LY) + 1;
+        this->ioRegisters->setByteInternal(LY, currentScanline);
 
-        if (currentScanline < 144)
+        if (currentScanline == 144)
+        {
+            this->interruptHandler->requestInterrupt(Interrupt::VBLANK);
+        }
+        else if (currentScanline > 153)
+        {
+            this->ioRegisters->setByteInternal(LY, 0);
+        }
+        else if (currentScanline < 144)
         {
             this->ppu->drawScanLine(
                 this->areBackgroundEnabled(lcdControl),
@@ -43,22 +52,13 @@ void LCDHandler::updateLCD(uint32_t consumedCpuCycle)
                 this->getWindowTileMapAddress(lcdControl),
                 currentScanline);
         }
-        else if (currentScanline == 144)
-        {
-            this->interruptHandler->requestInterrupt(Interrupt::VBLANK);
-        }
-        else if (currentScanline > 153)
-        {
-            currentScanline = 0;
-        }
 
-        this->ioRegisters->setByteInternal(LY, currentScanline);
     }
 }
 
 bool LCDHandler::areBackgroundEnabled(uint8_t lcdc)
 {
-    return this->isCGB || ((lcdc & 1) == 1);
+    return this->isCGB || BitUtil::getBit(lcdc, 0);
 }
 
 bool LCDHandler::areOBJEnabled(uint8_t lcdc)

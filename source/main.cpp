@@ -90,15 +90,17 @@ void tickProgram()
           ss << "(nn = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 2);
           ss << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
     }
-    ss << "\n";
+    ss << " - LY: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::LY);
+    ss << " - IF: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::IF);
+    ss << " - IE: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::IE);
+    ss <<  "\n";
     std::cout << ss.str();
 
-    if (registers.getPC() == 0x02be)
+    if (registers.getPC() == 0x0040)
     {
+        std::cout << getProgramStateString(instruction, registers);
         std::string input;
         std::getline(std::cin, input);
-
-        std::cout << getProgramStateString(instruction, registers);
     }
 
     uint32_t consumedCpuCycle = 4;
@@ -118,6 +120,7 @@ void tickProgram()
     lcdHandler.updateLCD(consumedCpuCycle);
 
     cpuCycle += consumedCpuCycle;
+    if (cpuCycle >= 69905) {cpuCycle -= 69905;}
 }
 
 std::string getProgramStateString(gb_lib::Instruction* instruction, gb_lib::Registers& registers)

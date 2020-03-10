@@ -30,7 +30,7 @@ private:
 private:
     MemorySpace* mmu;
     Renderer* renderer;
-    uint8_t buffer[166 * 144] = {};
+    uint8_t buffer[160 * 144] = {};
 };
 
 }

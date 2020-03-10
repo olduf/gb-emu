@@ -1,5 +1,5 @@
 #include "lib/graphic/ppu.hpp"
-
+#include <cstdio>
 namespace gb_lib {
 
 PPU::PPU(MemorySpace* mmu, Renderer* renderer)
@@ -46,11 +46,27 @@ void PPU::drawScanLine(
     {
         this->drawObjects(objectComposition, scanLine);
     }
+
+    if (scanLine == 139) {
+      printf("LCDC: 0x%02X\n", this->mmu->getByte(LCDC));
+      printf("tileMapAddress: 0x%04X\n", tileMapAddress);
+      printf("tileDataAddress: 0x%04X\n", tileDataAddress);
+      for (int i = 0; i < 32; i++) {
+        for (int j = 0; j < 32; j++) {
+          printf("%u,", this->mmu->getByte(tileMapAddress + (i * 32) + j));
+        }
+        printf("\n");
+      }
+    }
 }
 
 void PPU::drawTiles(uint16_t tileMapAddress, uint16_t tileDataAddress, uint8_t scanLine, uint8_t yPosition, bool usingWindow)
 {
-    uint16_t tileRow = static_cast<uint16_t>(yPosition / 8) * 32;
+    // https://gbdev.gg8.se/wiki/articles/Video_Display#BG_Map_Tile_Numbers
+    // An area of VRAM known as Background Tile Map contains the numbers of tiles to be displayed.
+    // It is organized as 32 rows of 32 bytes each. Each byte contains a number of a tile to be displayed.
+    uint16_t tileRow = static_cast<uint16_t>(yPosition / 8);
+
     uint8_t scrollX = this->mmu->getByte(SCX);
     uint8_t windowX = this->mmu->getByte(WX) - 7;
 
@@ -71,7 +87,7 @@ void PPU::drawTiles(uint16_t tileMapAddress, uint16_t tileDataAddress, uint8_t s
         }
 
         uint16_t tileColumn = static_cast<uint16_t>(xPosition / 8);
-        uint8_t tileId = this->mmu->getByte(tileMapAddress + tileRow + tileColumn);
+        uint8_t tileId = this->mmu->getByte(tileMapAddress + (tileRow * 32) + tileColumn);
         uint16_t tileData = tileDataAddress;
 
         // http://bgb.bircd.org/pandocs.htm > VRAM Background Maps
@@ -87,11 +103,14 @@ void PPU::drawTiles(uint16_t tileMapAddress, uint16_t tileDataAddress, uint8_t s
         }
         else
         {
-            tileData += static_cast<int8_t>((tileId + 128) * 16);
+            tileData += (static_cast<int8_t>(tileId) + 128) * 16;
         }
+
+        uint8_t line = (yPosition % 8) * 2;
+        /*TEMP*/this->buffer[160 * scanLine + pixel] = tileId;
     }
 
-    // CGB
+    // TODO CGB
 }
 
 void PPU::drawObjects(ObjComposition objectComposition, uint8_t scanLine)
