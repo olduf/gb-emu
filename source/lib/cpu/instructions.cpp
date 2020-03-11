@@ -6,7 +6,7 @@ Instruction* instructions[2][256] = {
     {
         InstructionBuilder(0x00, 4, 1, std::string("NOP")).build(),
         InstructionBuilder(0x01, 12, 3, std::string("LD BC,nn")).load(&InstructionArgument::NN).store(&InstructionArgument::BC).build(),
-        InstructionBuilder(0x02, 8, 1, std::string("LD (BC),A")).load(&InstructionArgument::_BC).store(&InstructionArgument::A).build(),
+        InstructionBuilder(0x02, 8, 1, std::string("LD (BC),A")).load(&InstructionArgument::A).store(&InstructionArgument::_BC).build(),
         InstructionBuilder(0x03, 8, 1, std::string("INC BC")).load(&InstructionArgument::BC).increment(AffectFlagsType::U16).store(&InstructionArgument::BC).build(),
         InstructionBuilder(0x04, 4, 1, std::string("INC B")).load(&InstructionArgument::B).increment(AffectFlagsType::U8).store(&InstructionArgument::B).build(),
         InstructionBuilder(0x05, 4, 1, std::string("DEC B")).load(&InstructionArgument::B).decrement(AffectFlagsType::U8).store(&InstructionArgument::B).build(),
@@ -23,7 +23,7 @@ Instruction* instructions[2][256] = {
 
         InstructionBuilder(0x10, 4, 1, std::string("STOP")).build(),
         InstructionBuilder(0x11, 12, 3, std::string("LD DE,nn")).load(&InstructionArgument::NN).store(&InstructionArgument::DE).build(),
-        InstructionBuilder(0x12, 8, 1, std::string("LD (DE),A")).load(&InstructionArgument::_DE).store(&InstructionArgument::A).build(),
+        InstructionBuilder(0x12, 8, 1, std::string("LD (DE),A")).load(&InstructionArgument::A).store(&InstructionArgument::_DE).build(),
         InstructionBuilder(0x13, 8, 1, std::string("INC DE")).load(&InstructionArgument::DE).increment(AffectFlagsType::U16).store(&InstructionArgument::DE).build(),
         InstructionBuilder(0x14, 4, 1, std::string("INC D")).load(&InstructionArgument::D).increment(AffectFlagsType::U8).store(&InstructionArgument::D).build(),
         InstructionBuilder(0x15, 4, 1, std::string("DEC D")).load(&InstructionArgument::D).decrement(AffectFlagsType::U8).store(&InstructionArgument::D).build(),

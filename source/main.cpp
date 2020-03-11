@@ -90,9 +90,9 @@ void tickProgram()
           ss << "(nn = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 2);
           ss << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
     }
-    ss << " - LY: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::LY);
-    ss << " - IF: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::IF);
-    ss << " - IE: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::IE);
+    // ss << " - LY: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::LY);
+    // ss << " - IF: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::IF);
+    // ss << " - IE: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::IE);
     ss <<  "\n";
     std::cout << ss.str();
 
@@ -111,7 +111,6 @@ void tickProgram()
     }
     else
     {
-        //printf("cpu.tick() - IE: 0x%02X, IF: 0x%02X\n", mmu->getByte(gb_lib::IE), mmu->getByte(gb_lib::IF));
         consumedCpuCycle = cpu.tick();
     }
 
@@ -198,13 +197,13 @@ int sfmlMain()
 
   // Load a sprite to display
   sf::Texture texture;
-  if (!texture.create(166, 144)) {
+  if (!texture.create(160, 144)) {
       return EXIT_FAILURE;
   }
 
   // pixel is what we're going to update
-  sf::Uint8* pixels = new sf::Uint8[166 * 144 * 4];
-  for (int i = 0; i < 166 * 144 * 4; i++)
+  sf::Uint8* pixels = new sf::Uint8[160 * 144 * 4];
+  for (int i = 0; i < 160 * 144 * 4; i++)
   {
       pixels[i] = 0xFF;
   }
@@ -216,7 +215,7 @@ int sfmlMain()
   screen.setOutlineColor(sf::Color(250, 150, 100));
   screen.setPosition(16, 16);
   screen.setTexture(&texture);
-  screen.setTextureRect(sf::IntRect(500, 800, 166, 144));
+  screen.setTextureRect(sf::IntRect(500, 800, 160, 144));
 
   // Start the game loop
   while (window.isOpen())
