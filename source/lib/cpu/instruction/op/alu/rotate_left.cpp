@@ -7,20 +7,12 @@ int32_t RotateLeft::execute(Registers* registers, MemorySpace* mmu, int32_t opAr
     Flags& flags = registers->getFlags();
 
     int32_t result = (context << 1) & 0xFF;
-
-    if ((context & 0x80) != 0)
-    {
-        result = result | 1;
-        flags.setCarry(true);
-    }
-    else
-    {
-        flags.setCarry(false);
-    }
+    result = result | (flags.isCarry() ? 1 : 0);
 
     flags.setZero(result == 0);
     flags.setSubtraction(false);
     flags.setHalfCarry(false);
+    flags.setCarry((context & 0x80) != 0);
 
     return result;
 }
