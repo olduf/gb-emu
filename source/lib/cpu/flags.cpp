@@ -72,7 +72,7 @@ uint8_t Flags::getValue()
 }
 void Flags::setValue(uint8_t value)
 {
-    this->value = value;
+    this->value = value & 0xF0;
 }
 
 }
