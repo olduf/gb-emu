@@ -260,7 +260,7 @@ Instruction* instructions[2][256] = {
         InstructionBuilder(0xEF, 16, 1, std::string("RST 28H")).load(&InstructionArgument::PC).push().scalar(0x28).jump().build(),
 
         InstructionBuilder(0xF0, 12, 2, std::string("LDH A,(n)")).load(&InstructionArgument::_N).store(&InstructionArgument::A).build(),
-        InstructionBuilder(0xF1, 12, 1, std::string("POP HL")).pop().store(&InstructionArgument::AF).build(),
+        InstructionBuilder(0xF1, 12, 1, std::string("POP AF")).pop().store(&InstructionArgument::AF).build(),
         InstructionBuilder(0xF2, 8, 1, std::string("LD A,(C)")).load(&InstructionArgument::_C).store(&InstructionArgument::A).build(),
         InstructionBuilder(0xF3, 4, 1, std::string("DI")).enableInterrupts(false).build(),
         InstructionBuilder(0xF4, 4, 1, std::string("Invalid Operation")).build(),
