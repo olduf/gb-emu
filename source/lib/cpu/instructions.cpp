@@ -43,7 +43,7 @@ Instruction* instructions[2][256] = {
         InstructionBuilder(0x22, 8, 1, std::string("LD (HL+),A")).load(&InstructionArgument::A).store(&InstructionArgument::_HL).load(&InstructionArgument::HL).increment(AffectFlagsType::NONE).store(&InstructionArgument::HL).build(),
         InstructionBuilder(0x23, 8, 1, std::string("INC HL")).load(&InstructionArgument::HL).increment(AffectFlagsType::U16).store(&InstructionArgument::HL).build(),
         InstructionBuilder(0x24, 4, 1, std::string("INC H")).load(&InstructionArgument::H).increment(AffectFlagsType::U8).store(&InstructionArgument::H).build(),
-        InstructionBuilder(0x25, 4, 1, std::string("DEC H")).load(&InstructionArgument::B).decrement(AffectFlagsType::U8).store(&InstructionArgument::H).build(),
+        InstructionBuilder(0x25, 4, 1, std::string("DEC H")).load(&InstructionArgument::H).decrement(AffectFlagsType::U8).store(&InstructionArgument::H).build(),
         InstructionBuilder(0x26, 8, 2, std::string("LD H,n")).load(&InstructionArgument::N).store(&InstructionArgument::H).build(),
         InstructionBuilder(0x27, 4, 1, std::string("DAA")).load(&InstructionArgument::A).decimalAdjust().store(&InstructionArgument::A).build(),
         InstructionBuilder(0x28, 12, 2, std::string("JR Z,n")).proceedIf(FlagCondition::ZERO, 8).load(&InstructionArgument::PC).add(&InstructionArgument::N, AffectFlagsType::S8).store(&InstructionArgument::PC).jump().build(),
@@ -51,7 +51,7 @@ Instruction* instructions[2][256] = {
         InstructionBuilder(0x2A, 8, 1, std::string("LD A,(HL+)")).load(&InstructionArgument::_HL).store(&InstructionArgument::A).load(&InstructionArgument::HL).increment(AffectFlagsType::NONE).store(&InstructionArgument::HL).build(),
         InstructionBuilder(0x2B, 8, 1, std::string("DEC HL")).load(&InstructionArgument::HL).decrement(AffectFlagsType::U16).store(&InstructionArgument::HL).build(),
         InstructionBuilder(0x2C, 4, 1, std::string("INC L")).load(&InstructionArgument::L).increment(AffectFlagsType::U8).store(&InstructionArgument::L).build(),
-        InstructionBuilder(0x2D, 4, 1, std::string("DEC L")).load(&InstructionArgument::L).increment(AffectFlagsType::U8).store(&InstructionArgument::L).build(),
+        InstructionBuilder(0x2D, 4, 1, std::string("DEC L")).load(&InstructionArgument::L).decrement(AffectFlagsType::U8).store(&InstructionArgument::L).build(),
         InstructionBuilder(0x2E, 8, 2, std::string("LD L,n")).load(&InstructionArgument::N).store(&InstructionArgument::L).build(),
         InstructionBuilder(0x2F, 4, 1, std::string("CPL")).load(&InstructionArgument::A).complement().store(&InstructionArgument::A).build(),
 

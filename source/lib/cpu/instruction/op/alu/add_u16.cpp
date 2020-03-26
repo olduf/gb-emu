@@ -19,10 +19,10 @@ int32_t AddU16::execute(Registers* registers, MemorySpace* mmu, int32_t opArgume
 
     Flags& flags = registers->getFlags();
     flags.setSubtraction(false);
-    flags.setHalfCarry((context & 0x0F) + (operand & 0x0F) > 0x0F);
+    flags.setHalfCarry((context & 0x0FFF) + (operand & 0x0FFF) > 0x0FFF);
     flags.setCarry(result > 0xFFFF);
 
-    return result;
+    return result & 0xFFFF;
 }
 
 }

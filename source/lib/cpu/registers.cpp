@@ -12,7 +12,7 @@ Registers::Registers()
     this->setHL(0X014D);
     this->setSP(0xFFFE);
     this->setPC(0x0100);
-    this->setIME(true);
+    this->setIME(false);
 
 /*
     // GameBoy Color - GB mode
