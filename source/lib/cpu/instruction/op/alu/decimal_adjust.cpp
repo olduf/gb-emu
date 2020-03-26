@@ -5,38 +5,38 @@ namespace gb_lib {
 int32_t DecimalAdjust::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     Flags& flags = registers->getFlags();
-    uint8_t result = static_cast<uint8_t>(context);
+    int32_t result = context;
 
     // after a subtraction, only adjust if (half-)carry occurred
     if (flags.isSubtraction())
     {
         if (flags.isHalfCarry())
         {
-            result -= 0x06;
+            result = (result - 0x06) & 0xFF;
         }
         if (flags.isCarry())
         {
-            result -= 0x60;
+            result = (result - 0x60) & 0xFF;
         }
     }
-    // after an addition, adjust if (half-)carry occurred or if result is out of bounds
     else
     {
         if (flags.isHalfCarry() || (result & 0x0F) > 0x09)
         {
             result += 0x06;
         }
-        if (flags.isCarry() || result > 0x99)
+        if (flags.isCarry() || result > 0x9F)
         {
             result += 0x60;
             flags.setCarry(true);
         }
     }
 
+    result = result & 0xFF;
     flags.setZero(result == 0);
     flags.setHalfCarry(false);
 
-    return static_cast<int32_t>(result);
+    return result;
 }
 
 }
