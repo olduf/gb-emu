@@ -22,7 +22,7 @@ int32_t SubtractWithCarry::execute(Registers* registers, MemorySpace* mmu, int32
 
     flags.setZero((result & 0xFF) == 0);
     flags.setSubtraction(true);
-    flags.setHalfCarry(((operand + carry) & 0x0F) > (context & 0x0F));
+    flags.setHalfCarry(((context ^ operand ^ (result & 0xFF)) & 0x10) != 0);
     flags.setCarry(operand + carry > (context & 0xFF));
 
     return result;
