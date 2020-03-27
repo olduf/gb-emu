@@ -250,7 +250,7 @@ Instruction* instructions[2][256] = {
         InstructionBuilder(0xE5, 16, 1, std::string("PUSH HL")).load(&InstructionArgument::HL).push().build(),
         InstructionBuilder(0xE6, 8, 2, std::string("AND A,n")).load(&InstructionArgument::A).andBytes(&InstructionArgument::N).store(&InstructionArgument::A).build(),
         InstructionBuilder(0xE7, 16, 1, std::string("RST 20H")).load(&InstructionArgument::PC).push().scalar(0x20).jump().build(),
-        InstructionBuilder(0xE8, 16, 2, std::string("ADD SP,n")).load(&InstructionArgument::SP).add(&InstructionArgument::N, AffectFlagsType::U16).setFlagZero(false).store(&InstructionArgument::SP).build(),
+        InstructionBuilder(0xE8, 16, 2, std::string("ADD SP,n")).load(&InstructionArgument::SP).add(&InstructionArgument::N, AffectFlagsType::U16_S8).setFlagZero(false).store(&InstructionArgument::SP).build(),
         InstructionBuilder(0xE9, 4, 1, std::string("JP (HL)")).load(&InstructionArgument::HL).jump().build(),
         InstructionBuilder(0xEA, 16, 3, std::string("LD (nn),A")).load(&InstructionArgument::A).store(&InstructionArgument::_NN).build(),
         InstructionBuilder(0xEB, 4, 1, std::string("Invalid Operation")).build(),
@@ -268,7 +268,7 @@ Instruction* instructions[2][256] = {
         InstructionBuilder(0xF6, 8, 2, std::string("OR A,n")).load(&InstructionArgument::A).orBytes(&InstructionArgument::N).store(&InstructionArgument::A).build(),
         InstructionBuilder(0xF7, 16, 1, std::string("RST 30H")).load(&InstructionArgument::PC).push().scalar(0x30).jump().build(),
         InstructionBuilder(0xF8, 12, 2, std::string("LD HL,SP+n")).load(&InstructionArgument::SP).add(&InstructionArgument::N, AffectFlagsType::U16_S8).setFlagZero(false).store(&InstructionArgument::HL).build(),
-        InstructionBuilder(0xF9, 4, 1, std::string("LD SP,HL")).load(&InstructionArgument::SP).store(&InstructionArgument::HL).build(),
+        InstructionBuilder(0xF9, 4, 1, std::string("LD SP,HL")).load(&InstructionArgument::HL).store(&InstructionArgument::SP).build(),
         InstructionBuilder(0xFA, 16, 3, std::string("LD A,(nn)")).load(&InstructionArgument::_NN).store(&InstructionArgument::A).build(),
         InstructionBuilder(0xFB, 4, 1, std::string("EI")).build(), // handled in cpu because interrupt needs to be enabled AFTER the next instruction
         InstructionBuilder(0xFC, 4, 1, std::string("Invalid Operation")).build(),

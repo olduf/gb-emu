@@ -20,8 +20,8 @@ int32_t AddU16S8::execute(Registers* registers, MemorySpace* mmu, int32_t opArgu
     Flags& flags = registers->getFlags();
     flags.setZero(result == 0);
     flags.setSubtraction(false);
-    flags.setHalfCarry((context & 0x0F) + (operand & 0x0F) > 0x0F);
-    flags.setCarry(result > 0xFFFF);
+    flags.setHalfCarry((((context & 0x0F) + (operand & 0x0F)) & 0x10) != 0);
+    flags.setCarry((((context & 0xFF) + (operand & 0xFF)) & 0x100) != 0);
 
     return result;
 }
