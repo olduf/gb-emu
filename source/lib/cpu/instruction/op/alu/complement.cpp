@@ -5,8 +5,8 @@ namespace gb_lib {
 int32_t Complement::execute(Registers* registers, MemorySpace* mmu, int32_t opArgument, int32_t context)
 {
     Flags& flags = registers->getFlags();
-    flags.setSubtraction(false);
-    flags.setHalfCarry(false);
+    flags.setSubtraction(true);
+    flags.setHalfCarry(true);
 
     return ~context;
 }
