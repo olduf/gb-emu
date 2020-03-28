@@ -31,9 +31,21 @@ uint32_t loadFile(const char* filePath, uint8_t** buffer);
 void tickProgram();
 
 uint8_t* rom = nullptr;
-//uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/07-jr,jp,call,ret,rst.gb", &rom);
-uint32_t romSize = loadFile("./roms/tetris.gb", &rom);
+//uint32_t romSize = loadFile("./roms/test/cpu_instrs/cpu_instrs.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/01-special.gb", &rom);
+/*/ failed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/02-interrupts.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/03-op sp,hl.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/04-op r,imm.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/05-op rp.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/06-ld r,r.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/07-jr,jp,call,ret,rst.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/08-misc instrs.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/09-op r,r.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/10-bit ops.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/11-op a,(hl).gb", &rom);
+//uint32_t romSize = loadFile("./roms/tetris.gb", &rom);
 uint32_t cpuCycle = 0;
+bool debug = false;
 
 gb_lib::DMAMediator dmaMediator;
 gb_lib::NullMediator hdmaMediator;
@@ -77,22 +89,26 @@ void tickProgram()
         instruction = gb_lib::instructions[0][code];
     }
 
-    std::stringstream ss;
-    ss << "PC: " << std::setw(4) << std::setfill('0') << std::hex << pc << ", operation: " << instruction->getLabel() << " ";
-    if (instruction->getArgumentLength() == 1)
-    {
-          ss << "(n = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
-    }
-    else if (instruction->getArgumentLength() == 2)
-    {
-          ss << "(nn = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 2);
-          ss << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
-    }
-
-    // ss << " - LY: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LY);
-    // ss << " - IF: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IF);
-    // ss << " - IE: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IE);
-    // ss << " - FF80: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(0xFF80);
+    // std::stringstream ss;
+    // ss << "PC: " << std::setw(4) << std::setfill('0') << std::hex << pc << ", operation: " << instruction->getLabel();
+    //
+    // if (cb == 0) {
+    //     if (instruction->getArgumentLength() == 1)
+    //     {
+    //           ss << " (n = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
+    //     }
+    //     else if (instruction->getArgumentLength() == 2)
+    //     {
+    //           ss << " (nn = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 2);
+    //           ss << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
+    //     }
+    // }
+    //
+    // // ss << " - LY: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LY);
+    // // ss << " - LCDC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LCDC);
+    // // ss << " - IF: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IF);
+    // // ss << " - IE: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IE);
+    // // ss << " - FF80: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(0xFF80);
     // ss << " AF: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getAF() << ", ";
     // ss << "BC: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getBC() << ", ";
     // ss << "DE: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getDE() << ", ";
@@ -100,17 +116,25 @@ void tickProgram()
     // ss << "SP: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getSP() << ", ";
     // ss << "PC: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getPC() << ", ";
     // ss << "IME: " << registers.isIME();
-    ss <<  "\n";
-    std::cout << ss.str();
+    // ss <<  "\n";
+    // std::cout << ss.str();
 
-    if (pc == 0x02CA || pc == 0x0040 || pc == 0x0281)
-    {
-        printf("\n");
-        for (uint16_t i = 0x8001; i <= 0x9010; i++) {
-          printf("%02X ", mmu->getByte(i));
-        }
-        printf("\n");
-        std::cout << getProgramStateString(instruction, registers);
+    if (/*pc == 0x02CA || pc == 0x0040 || pc == 0x0281 || pc == 0x29DC*/ debug)
+    {debug = true;
+        // uint16_t addr = 0x8000;
+        // printf("\n");
+        // while (addr < 0x8800) {
+        //     printf("%04X: ", addr);
+        //
+        //     for (uint16_t i = 0; i < 16; i++) {
+        //       printf("%02X ", mmu->getByte(addr + i));
+        //     }
+        //
+        //     printf("\n");
+        //     addr += 16;
+        // }
+        //
+        // std::cout << getProgramStateString(instruction, registers);
         std::string input;
         std::getline(std::cin, input);
     }
@@ -175,7 +199,7 @@ uint32_t loadFile(const char* filePath, uint8_t** buffer)
 
 int defaultMain()
 {
-    std::cout << getProgramStateString(instruction, registers);
+    //std::cout << getProgramStateString(instruction, registers);
 
     bool loop = true;
     while (loop)

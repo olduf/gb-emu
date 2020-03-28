@@ -47,17 +47,17 @@ void PPU::drawScanLine(
         this->drawObjects(objectComposition, scanLine);
     }
 
-    if (scanLine == 139) {
-      printf("LCDC: 0x%02X\n", this->mmu->getByte(LCDC));
-      printf("tileMapAddress: 0x%04X\n", tileMapAddress);
-      printf("tileDataAddress: 0x%04X\n", tileDataAddress);
-      for (int i = 0; i < 144; i++) {
-        for (int j = 0; j < 160; j++) {
-          printf("%02X ", this->buffer[i * 160 + j]);
-        }
-        printf("\n");
-      }
-    }
+    // if (scanLine == 139) {
+    //   printf("LCDC: 0x%02X\n", this->mmu->getByte(LCDC));
+    //   printf("tileMapAddress: 0x%04X\n", tileMapAddress);
+    //   printf("tileDataAddress: 0x%04X\n", tileDataAddress);
+    //   for (int i = 0; i < 144; i++) {
+    //     for (int j = 0; j < 160; j++) {
+    //       printf("%02X ", this->buffer[i * 160 + j]);
+    //     }
+    //     printf("\n");
+    //   }
+    // }
 }
 
 void PPU::drawTiles(uint16_t tileMapAddress, uint16_t tileDataAddress, uint8_t scanLine, uint8_t yPosition, bool usingWindow)

@@ -21,6 +21,9 @@ public:
     void handleEI();
     void requestInterrupt(Interrupt interrupt);
 
+    bool isHaltBugState();
+    bool isInterruptRequested();
+
     Instruction* getInterruptInstruction();
 
 private:

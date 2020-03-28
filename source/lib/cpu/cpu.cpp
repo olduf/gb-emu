@@ -4,6 +4,7 @@ namespace gb_lib {
 
 Cpu::Cpu(InterruptHandler* interruptHandler, MemorySpace* mmu, Registers* registers, SpeedModeHandler* speedModeHandler)
 {
+    this->haltBug = false;
     this->cpuState = CpuState::INSTRUCTION;
     this->interruptHandler = interruptHandler;
     this->mmu = mmu;
@@ -13,8 +14,23 @@ Cpu::Cpu(InterruptHandler* interruptHandler, MemorySpace* mmu, Registers* regist
 
 uint32_t Cpu::tick()
 {
-    Instruction* instruction = this->interruptHandler->getInterruptInstruction();
+    Instruction* instruction = nullptr;
     uint32_t consumedCpuCycle = 4;
+
+    // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
+    // 4.10. The HALT Instruction Behaviour
+    // HALT mode is entered. It works like the IME = 1 case, but when a IF flag is set and the corresponding IE flag is also set,
+    // the CPU doesn't jump to the interrupt vector, it just continues executing instructions. The IF flags aren't cleared.
+    //
+    // Here we already have the next instruction, we emulate the bug by decrementing the PC
+    if (this->cpuState == CpuState::HALTED && !this->registers->isIME() && this->interruptHandler->isInterruptRequested())
+    {
+        this->cpuState = CpuState::INSTRUCTION;
+    }
+    else
+    {
+        instruction = this->interruptHandler->getInterruptInstruction();
+    }
 
     if (instruction == nullptr && this->cpuState == CpuState::INSTRUCTION)
     {
@@ -34,16 +50,24 @@ uint32_t Cpu::tick()
                 this->interruptHandler->runEI();
                 this->registers->incrementPC(1);
                 return 4;
-                break;
 
             case HALT:
-                this->cpuState = CpuState::HALTED;
-                break;
+                {
+                    this->haltBug = this->interruptHandler->isHaltBugState();
+                    this->registers->incrementPC(1);
+
+                    if (!this->haltBug)
+                    {
+                        this->cpuState = CpuState::HALTED;
+                    }
+                }
+                return 4;
 
             case STOP:
                 this->cpuState = CpuState::STOPPED;
                 this->speedModeHandler->handleSpeedMode();
-                break;
+                this->registers->incrementPC(1);
+                return 4;
         }
 
         instruction = instructions[prefixed][opCode];
@@ -51,17 +75,34 @@ uint32_t Cpu::tick()
 
     if (instruction != nullptr)
     {
+        // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
+        // 4.10. The HALT Instruction Behaviour
+        // HALT bug occurs. The CPU fails to increase PC when executing the next instruction.
+        //
+        // Here we already have the next instruction, we emulate the bug by decrementing the PC
+        if (this->haltBug)
+        {
+            this->haltBug = false;
+            this->registers->decrementPC(1);
+        }
+
         consumedCpuCycle = instruction->execute(this->registers, this->mmu, 0);
 
         this->interruptHandler->handleEI();
 
-        // need to validate behavior with HALT/STOP
+        // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
+        // 4.9. Interrupt Handling
+        // It takes 20 clocks to dispatch an interrupt. If CPU is in HALT mode, another extra 4 clocks are needed.
+        if (this->cpuState == CpuState::HALTED)
+        {
+            consumedCpuCycle += 4;
+        }
+
+        // TODO - need to validate behavior with STOP
         this->cpuState = CpuState::INSTRUCTION;
     }
 
     return consumedCpuCycle;
 }
-
-// It takes 20 cycles to dispatch an interrupt. If CPU is in HALT mode, it takes an extra 4 cycles (TODO).
 
 }

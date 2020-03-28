@@ -25,6 +25,8 @@ uint8_t IORegisters::getByte(uint16_t address)
     switch (effectiveAddress)
     {
         case 0x00:
+            return this->registers[effectiveAddress] | 0xC0;
+            break;
         case 0x01:
         case 0x02:
         case 0x03:
@@ -42,7 +44,7 @@ uint8_t IORegisters::getByte(uint16_t address)
             return this->registers[effectiveAddress];
             break;
         case 0x0F:
-            return this->registers[effectiveAddress] & 0x1F;
+            return this->registers[effectiveAddress] | 0xE0;
             break;
         case 0x10:
         case 0x11:

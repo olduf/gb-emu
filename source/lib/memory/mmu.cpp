@@ -1,4 +1,5 @@
 #include "lib/memory/mmu.hpp"
+#include <cstdio>
 
 namespace gb_lib {
 
@@ -49,11 +50,13 @@ uint8_t MMU::getByteInternal(uint16_t address)
 
 void MMU::setByte(uint16_t address, uint8_t value)
 {
+    if (address == 0xFF02 && value == 0x81) { printf("%c", (char)this->ioRegisters->getByte(0xFF01)); }
     this->getMemorySpace(address)->setByte(address, value);
 }
 
 void MMU::setByteInternal(uint16_t address, uint8_t value)
 {
+    if (address == 0xFF02 && value == 0x81) { printf("%c", (char)this->ioRegisters->getByte(0xFF01)); }
     return this->getMemorySpace(address)->setByteInternal(address, value);
 }
 

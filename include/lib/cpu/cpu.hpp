@@ -25,6 +25,7 @@ public:
     uint32_t tick();
 
 private:
+    bool haltBug;
     CpuState cpuState;
     InterruptHandler* interruptHandler;
     MemorySpace* mmu;

@@ -30,6 +30,16 @@ void InterruptHandler::requestInterrupt(Interrupt interrupt)
     this->mmu->setByte(IF, updatedInterruptFlagValue);
 }
 
+bool InterruptHandler::isHaltBugState()
+{
+    return !this->registers->isIME() && this->isInterruptRequested();
+}
+
+bool InterruptHandler::isInterruptRequested()
+{
+    return (this->mmu->getByte(IF) & this->mmu->getByte(IE) & 0x1F) != 0;
+}
+
 Instruction* InterruptHandler::getInterruptInstruction()
 {
     if (this->registers->isIME())
