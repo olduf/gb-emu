@@ -33,7 +33,11 @@ uint8_t IORegisters::getByte(uint16_t address)
         case 0x04:
         case 0x05:
         case 0x06:
+            return this->registers[effectiveAddress];
+            break;
         case 0x07:
+            return this->registers[effectiveAddress] | 0xF8;
+            break;
         case 0x08:
         case 0x09:
         case 0x0A:

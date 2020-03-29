@@ -4,12 +4,10 @@ namespace gb_lib {
 
 TimerHandler::TimerHandler(InterruptHandler* interruptHandler, MemorySpace* mmu)
 {
-    this->interruptHandler = interruptHandler;
-    this->mmu = mmu;
-
-    // TODO - initialize value?
     this->internalDivCounter = 0;
     this->internalTimerCounter = 0;
+    this->interruptHandler = interruptHandler;
+    this->mmu = mmu;
 }
 
 // TODO - handle obscure behavior (https://gbdev.gg8.se/wiki/articles/Timer_Obscure_Behaviour)
@@ -19,10 +17,14 @@ void TimerHandler::updateTimers(uint32_t consumedCpuCycle)
 
     if (this->isTimerEnabled())
     {
+        uint32_t timerFrequency = this->getTimerFrequency();
+
         this->internalTimerCounter += consumedCpuCycle;
 
-        if (this->internalTimerCounter >= this->getTimerFrequency())
+        if (this->internalTimerCounter >= timerFrequency)
         {
+            this->internalTimerCounter -= timerFrequency;
+
             uint8_t timerValue = this->mmu->getByte(TIMA);
 
             if (timerValue == 0xFF)
