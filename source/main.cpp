@@ -21,7 +21,8 @@
 #include "lib/memory/dma/hdma_handler.hpp"
 #include "lib/memory/dma/null_mediator.hpp"
 #include "lib/memory/mmu_factory.hpp"
-#include "lib/timer_handler.hpp"
+#include "lib/timer/timer_handler.hpp"
+#include "lib/timer/timer_mediator.hpp"
 
 int defaultMain();
 int sfmlMain();
@@ -33,7 +34,7 @@ void tickProgram();
 uint8_t* rom = nullptr;
 //uint32_t romSize = loadFile("./roms/test/cpu_instrs/cpu_instrs.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/01-special.gb", &rom);
-/*/ failed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/02-interrupts.gb", &rom);
+/*/ passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/02-interrupts.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/03-op sp,hl.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/04-op r,imm.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/05-op rp.gb", &rom);
@@ -43,14 +44,20 @@ uint8_t* rom = nullptr;
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/09-op r,r.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/10-bit ops.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/11-op a,(hl).gb", &rom);
+
+// failed - */uint32_t romSize = loadFile("./roms/test/instr_timing/instr_timing.gb", &rom);
+// failed - */uint32_t romSize = loadFile("./roms/test/interrupt_time/interrupt_time.gb", &rom);
+// failed - */uint32_t romSize = loadFile("./roms/test/mem_timing/mem_timing.gb", &rom);
+// failed - */uint32_t romSize = loadFile("./roms/test/mem_timing-2/mem_timing.gb", &rom);
+
 //uint32_t romSize = loadFile("./roms/tetris.gb", &rom);
-uint32_t cpuCycle = 0;
 bool debug = false;
 
 gb_lib::DMAMediator dmaMediator;
 gb_lib::NullMediator hdmaMediator;
 gb_lib::MMUFactory mmuFactory;
-gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, &hdmaMediator, false);
+gb_lib::TimerMediator timerMediator;
+gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, &hdmaMediator, &timerMediator, false);
 gb_lib::Registers registers;
 gb_lib::SpeedModeHandler speedModeHandler(mmu);
 gb_lib::DMAHandler dmaHandler(mmu, &dmaMediator, &speedModeHandler);
@@ -61,7 +68,7 @@ gb_lib::PPU ppu(mmu, nullptr);
 gb_lib::InterruptHandler interruptHandler(mmu, &registers);
 gb_lib::Cpu cpu(&interruptHandler, mmu, &registers, &speedModeHandler);
 gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu->getIORegisters(), &ppu, false);
-gb_lib::TimerHandler timerHandler(&interruptHandler, mmu);
+gb_lib::TimerHandler timerHandler(&interruptHandler, mmu, &timerMediator);
 
 uint8_t code = 0;
 gb_lib::Instruction* instruction = nullptr;
@@ -106,6 +113,9 @@ void tickProgram()
     //
     // // ss << " - LY: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LY);
     // // ss << " - LCDC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LCDC);
+    // // ss << " - TAC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::TAC);
+    // // ss << " - TIMA: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::TIMA);
+    // // ss << " - DIV: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::DIV);
     // // ss << " - IF: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IF);
     // // ss << " - IE: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IE);
     // // ss << " - FF80: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(0xFF80);
@@ -153,16 +163,11 @@ void tickProgram()
     dmaHandler.tick(consumedCpuCycle);
     timerHandler.updateTimers(consumedCpuCycle);
     lcdHandler.updateLCD(consumedCpuCycle);
-
-    cpuCycle += consumedCpuCycle;
-    if (cpuCycle >= 69905) {cpuCycle -= 69905;}
 }
 
 std::string getProgramStateString(gb_lib::Instruction* instruction, gb_lib::Registers& registers)
 {
     std::stringstream ss;
-
-    ss << "Cycle: " << std::dec << cpuCycle << "\n";
 
     ss << "CPU Registers:\n";
     ss << "AF: 0x" << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getAF() << ", ";

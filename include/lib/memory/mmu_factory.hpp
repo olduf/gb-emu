@@ -12,17 +12,18 @@
 #include "lib/memory/unused_memory_fea0_feff.hpp"
 #include "lib/memory/vram.hpp"
 #include "lib/memory/working_ram.hpp"
+#include "lib/timer/timer_mediator.hpp"
 
 namespace gb_lib {
 
 class MMUFactory
 {
 public:
-    MMU* create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, bool isCGB);
+    MMU* create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, TimerMediator* timerMediator, bool isCGB);
 
 private:
     MemorySpace* createHighRam(bool isCGB);
-    MemorySpace* createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, bool isCGB);
+    MemorySpace* createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, TimerMediator* timerMediator, bool isCGB);
 
 private:
     CartridgeFactory cartridgeFactory;

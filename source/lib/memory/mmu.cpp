@@ -56,7 +56,6 @@ void MMU::setByte(uint16_t address, uint8_t value)
 
 void MMU::setByteInternal(uint16_t address, uint8_t value)
 {
-    if (address == 0xFF02 && value == 0x81) { printf("%c", (char)this->ioRegisters->getByte(0xFF01)); }
     return this->getMemorySpace(address)->setByteInternal(address, value);
 }
 

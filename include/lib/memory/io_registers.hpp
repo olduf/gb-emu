@@ -4,6 +4,7 @@
 #include "lib/memory/dma/dma_mediator.hpp"
 #include "lib/memory/memory_location.hpp"
 #include "lib/memory/memory_space.hpp"
+#include "lib/timer/timer_mediator.hpp"
 #include "lib/util/bit_util.hpp"
 
 namespace gb_lib {
@@ -11,7 +12,7 @@ namespace gb_lib {
 class IORegisters : public MemorySpace
 {
 public:
-    IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, bool isCGB);
+    IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, TimerMediator* timerMediator, bool isCGB);
 
     uint8_t getByte(uint16_t address);
     uint8_t getByteInternal(uint16_t address);
@@ -21,6 +22,7 @@ public:
 private:
     DMAMediator* dmaMediator;
     DMAMediator* hdmaMediator;
+    TimerMediator* timerMediator;
     uint8_t registers[0x80] = {};
     uint8_t FF55Mask = 0;
 };

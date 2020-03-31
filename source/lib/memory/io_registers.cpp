@@ -2,10 +2,11 @@
 
 namespace gb_lib {
 
-IORegisters::IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, bool isCGB)
+IORegisters::IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, TimerMediator* timerMediator, bool isCGB)
 {
     this->dmaMediator = dmaMediator;
     this->hdmaMediator = hdmaMediator;
+    this->timerMediator = timerMediator;
 
     // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
     // 9.6. FF55H - HDMA5 - GBC Mode - HDMA Length/Mode/Start (R/W)
@@ -99,7 +100,11 @@ uint8_t IORegisters::getByte(uint16_t address)
         case 0x3E:
         case 0x3F:
         case 0x40:
+            return this->registers[effectiveAddress];
+            break;
         case 0x41:
+            return this->registers[effectiveAddress] | 0x80;
+            break;
         case 0x42:
         case 0x43:
         case 0x44:
@@ -191,7 +196,8 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
             this->registers[effectiveAddress] = value;
             break;
         case 0x04: // DIV
-            this->registers[effectiveAddress] = 0;
+            this->registers[0x04] = 0;
+            this->timerMediator->setDivInternalCounter(0);
             break;
         case 0x05:
         case 0x06:

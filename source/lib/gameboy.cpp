@@ -14,10 +14,10 @@ GameBoy::GameBoy(const char* romPath)
     this->cpuCycle = 0;
 
     uint32_t romSize = this->loadFile(romPath);
-    bool isCGB = false;
+    bool isCGB = false; // TODO
 
     MMUFactory mmuFactory;
-    this->mmu =  mmuFactory.create(rom, romSize, &(this->dmaMediator),  &(this->hdmaMediator), isCGB);
+    this->mmu = mmuFactory.create(rom, romSize, &(this->dmaMediator),  &(this->hdmaMediator), &(this->timerMediator), isCGB);
 
     this->interruptHandler = new InterruptHandler(this->mmu, &(this->registers));
     this->speedModeHandler = new SpeedModeHandler(this->mmu);
@@ -28,7 +28,7 @@ GameBoy::GameBoy(const char* romPath)
     this->ppu = new PPU(this->mmu, nullptr);
 
     this->lcdHandler = new LCDHandler(this->interruptHandler, this->mmu, this->ppu, isCGB);
-    this->timerHandler = new TimerHandler(this->interruptHandler, this->mmu);
+    this->timerHandler = new TimerHandler(this->interruptHandler, this->mmu, &(this->timerMediator));
 }
 
 GameBoy::~GameBoy()

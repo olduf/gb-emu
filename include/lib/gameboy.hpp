@@ -8,7 +8,8 @@
 #include "lib/memory/dma/dma_handler.hpp"
 #include "lib/memory/dma/hdma_handler.hpp"
 #include "lib/memory/mmu_factory.hpp"
-#include "lib/timer_handler.hpp"
+#include "lib/timer/timer_handler.hpp"
+#include "lib/timer/timer_mediator.hpp"
 
 // temporary
 #include <cstdio>
@@ -45,6 +46,7 @@ private:
     Registers registers;
     SpeedModeHandler* speedModeHandler;
     TimerHandler* timerHandler;
+    TimerMediator timerMediator;
     uint32_t cpuCycle;
 
 private:
