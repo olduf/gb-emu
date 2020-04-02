@@ -1,9 +1,11 @@
 #include "lib/memory/cartridge/mbc1.hpp"
+#include <cstdio>
 
 namespace gb_lib {
 
 MBC1::MBC1(uint8_t* data, uint32_t ramSize, uint32_t romSize, uint32_t numberOfRamBanks, uint32_t numberOfRomBanks)
 {
+    printf("ramSize: %u romSize: %u, numberOfRamBanks: %u, numberOfRomBanks: %u\n", ramSize, romSize, numberOfRamBanks, numberOfRomBanks);
     this->externalRamEnabled = false;
     this->memoryModel = 0;
 
@@ -15,7 +17,7 @@ MBC1::MBC1(uint8_t* data, uint32_t ramSize, uint32_t romSize, uint32_t numberOfR
     this->romBank = 1;
     this->romSize = romSize;
 
-    this->ram = new uint8_t[numberOfRamBanks * 0x4000];
+    this->ram = new uint8_t[numberOfRamBanks * 0x2000];
     this->rom = new uint8_t[numberOfRomBanks * 0x4000];
 
     memcpy(this->rom, data, romSize);
@@ -64,20 +66,22 @@ uint8_t MBC1::getByte(uint16_t address)
 
 void MBC1::setByte(uint16_t address, uint8_t value)
 {
+    printf("writing value 0x%02X to 0x%04X, memory model: %u\n", value, address, this->memoryModel);
     uint8_t newBankValue;
 
     switch (address & 0xF000)
     {
         case 0x0000:
         case 0x1000:
-            if (value == 0x00)
-            {
-                this->externalRamEnabled = false;
-            }
-            else if (value == 0x0A)
+            if ((value & 0x00FF) == 0x0A)
             {
                 this->externalRamEnabled = true;
             }
+            else
+            {
+                this->externalRamEnabled = false;
+            }
+
             break;
 
         // rom bank, lower 5 bits

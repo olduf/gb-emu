@@ -32,9 +32,9 @@ uint32_t loadFile(const char* filePath, uint8_t** buffer);
 void tickProgram();
 
 uint8_t* rom = nullptr;
-//uint32_t romSize = loadFile("./roms/test/cpu_instrs/cpu_instrs.gb", &rom);
+// failed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/cpu_instrs.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/01-special.gb", &rom);
-/*/ passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/02-interrupts.gb", &rom);
+// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/02-interrupts.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/03-op sp,hl.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/04-op r,imm.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/05-op rp.gb", &rom);
@@ -45,7 +45,7 @@ uint8_t* rom = nullptr;
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/10-bit ops.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/11-op a,(hl).gb", &rom);
 
-// failed - */uint32_t romSize = loadFile("./roms/test/instr_timing/instr_timing.gb", &rom);
+/*/ failed - */uint32_t romSize = loadFile("./roms/test/instr_timing/instr_timing.gb", &rom);
 // failed - */uint32_t romSize = loadFile("./roms/test/interrupt_time/interrupt_time.gb", &rom);
 // failed - */uint32_t romSize = loadFile("./roms/test/mem_timing/mem_timing.gb", &rom);
 // failed - */uint32_t romSize = loadFile("./roms/test/mem_timing-2/mem_timing.gb", &rom);
@@ -144,7 +144,7 @@ void tickProgram()
         //     addr += 16;
         // }
         //
-        // std::cout << getProgramStateString(instruction, registers);
+        std::cout << getProgramStateString(instruction, registers);
         std::string input;
         std::getline(std::cin, input);
     }
