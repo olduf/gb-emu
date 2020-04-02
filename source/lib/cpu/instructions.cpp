@@ -21,7 +21,7 @@ Instruction* instructions[2][256] = {
         InstructionBuilder(0x0E, 8, 2, std::string("LD C,n")).load(&InstructionArgument::N).store(&InstructionArgument::C).build(),
         InstructionBuilder(0x0F, 4, 1, std::string("RRC A")).load(&InstructionArgument::A).rotateRightAndCarry().store(&InstructionArgument::A).setFlagZero(false).build(),
 
-        InstructionBuilder(0x10, 0, 1, std::string("STOP")).build(),
+        InstructionBuilder(0x10, 4, 1, std::string("STOP")).build(),
         InstructionBuilder(0x11, 12, 3, std::string("LD DE,nn")).load(&InstructionArgument::NN).store(&InstructionArgument::DE).build(),
         InstructionBuilder(0x12, 8, 1, std::string("LD (DE),A")).load(&InstructionArgument::A).store(&InstructionArgument::_DE).build(),
         InstructionBuilder(0x13, 8, 1, std::string("INC DE")).load(&InstructionArgument::DE).increment(AffectFlagsType::U16).store(&InstructionArgument::DE).build(),
