@@ -1,10 +1,8 @@
 #ifndef _TIMER_HANDLER_H_
 #define _TIMER_HANDLER_H_
 
-#include "lib/cpu/interrupt_handler.hpp"
-#include "lib/memory/memory_location.hpp"
-#include "lib/memory/mmu.hpp"
-#include "lib/timer/timer_mediator.hpp"
+#include <cstdint>
+#include "lib/cpu/interrupt_mediator.hpp"
 #include "lib/util/bit_util.hpp"
 
 namespace gb_lib {
@@ -12,33 +10,45 @@ namespace gb_lib {
 class TimerHandler
 {
 public:
-    TimerHandler(InterruptHandler* interruptHandler, MemorySpace* mmu, TimerMediator* timerMediator);
+    TimerHandler(InterruptMediator* interruptMediator);
 
-    void updateTimers(uint32_t consumedCpuCycle);
+    uint16_t getDiv();
+    void setDiv(uint16_t div);
+
+    uint8_t getTima();
+    void setTima(uint8_t tima);
+
+    uint8_t getTma();
+    void setTma(uint8_t tma);
+
+    uint8_t getTac();
+    void setTac(uint8_t tac);
+
+    void update(uint32_t consumedCpuCycle);
 
 private:
-    InterruptHandler* interruptHandler;
-    MemorySpace* mmu;
-    TimerMediator* timerMediator;
-    uint16_t previousDivCounterValue;
+    bool didTimerBitChangeFromOneToZero(uint16_t divValue1, uint16_t divValue2, uint32_t timerFrequency1, uint32_t timerFrequency2);
+    bool isTimerEnabled(uint8_t tac);
+    bool isSelectedTimerBitUp(uint16_t divValue, uint32_t timerFrequency);
 
-private:
-    bool isTimerEnabled();
-    bool needToIncreaseTimer(uint16_t previousValue, uint16_t currentValue, uint32_t timerFrequency);
-
-    uint32_t getTimerFrequency();
+    uint32_t adjustConsumedCpuCycles(uint32_t consumedCpuCycles);
+    uint32_t getTimerFrequency(uint8_t tac);
 
     void increaseTimer();
 
 private:
-    const uint32_t timerFrequencies[4] = { 1024, 16, 64, 256 };
+    bool divGotReset;
+    InterruptMediator* interruptMediator;
+    uint16_t div;
+    uint8_t tima;
+    uint8_t tma;
+    uint8_t tac;
 
-    // https://gbdev.github.io/pandocs/Timer_Obscure_Behaviour.html#relation-between-timer-and-divider-register
-    const uint16_t timerIncreaseMask = 0x2A8; // 0b1010101000
+private:
+    const uint32_t timerFrequencies[4] = { 1024, 16, 64, 256 };
+    const uint16_t timerIncreaseMask = 0x02A8; // 0b0000001010101000
 };
 
 }
 
 #endif
-
-// TODO - Need to handle speed mode?

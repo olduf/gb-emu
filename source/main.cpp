@@ -12,7 +12,6 @@
 #include "lib/cpu/cpu.hpp"
 #include "lib/cpu/instructions.hpp"
 #include "lib/cpu/interrupt_handler.hpp"
-#include "lib/cpu/interrupt_mediator.hpp"
 #include "lib/cpu/registers.hpp"
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/gameboy.hpp"
@@ -23,7 +22,6 @@
 #include "lib/memory/dma/null_mediator.hpp"
 #include "lib/memory/mmu_factory.hpp"
 #include "lib/timer/timer_handler.hpp"
-#include "lib/timer/timer_mediator.hpp"
 
 int defaultMain();
 int sfmlMain();
@@ -46,10 +44,40 @@ uint8_t* rom = nullptr;
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/10-bit ops.gb", &rom);
 // passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/11-op a,(hl).gb", &rom);
 
-/*/ failed - */uint32_t romSize = loadFile("./roms/test/instr_timing/instr_timing.gb", &rom);
+// failed - */uint32_t romSize = loadFile("./roms/test/instr_timing/instr_timing.gb", &rom);
 // failed - */uint32_t romSize = loadFile("./roms/test/interrupt_time/interrupt_time.gb", &rom);
 // failed - */uint32_t romSize = loadFile("./roms/test/mem_timing/mem_timing.gb", &rom);
 // failed - */uint32_t romSize = loadFile("./roms/test/mem_timing-2/mem_timing.gb", &rom);
+
+// passed - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/instr/daa.gb", &rom);
+
+// passed - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/div_write.gb", &rom);
+/*/ failed - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/rapid_toggle.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim00_div_trigger.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim00.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim01_div_trigger.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim01.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim10_div_trigger.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim10.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim11_div_trigger.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim11.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tima_reload.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tima_write_reloading.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tma_write_reloading.gb", &rom);
+
+// passed - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/bits_bank1.gb", &rom);
+// failed - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/bits_bank2.gb", &rom);
+// failed - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/bits_mode.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/bits_ramg.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/multicart_rom_8Mb.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_64kb.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_256kb.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_1Mb.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_2Mb.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_4Mb.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_8Mb.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_16Mb.gb", &rom);
+// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_512kb.gb", &rom);
 
 //uint32_t romSize = loadFile("./roms/tetris.gb", &rom);
 bool debug = false;
@@ -57,20 +85,18 @@ bool debug = false;
 gb_lib::DMAMediator dmaMediator;
 gb_lib::NullMediator hdmaMediator;
 gb_lib::MMUFactory mmuFactory;
-gb_lib::TimerMediator timerMediator;
 gb_lib::InterruptMediator interruptMediator;
-gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, &hdmaMediator, &interruptMediator, &timerMediator, false);
+gb_lib::TimerHandler timerHandler(&interruptMediator);
+gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, &hdmaMediator, &interruptMediator, &timerHandler, false);
 gb_lib::Registers registers;
 gb_lib::SpeedModeHandler speedModeHandler(mmu);
 gb_lib::DMAHandler dmaHandler(mmu, &dmaMediator, &speedModeHandler);
 gb_lib::HDMAHandler hdmaHandler(mmu, &hdmaMediator, &speedModeHandler);
 gb_lib::PPU ppu(mmu, nullptr);
 
-
 gb_lib::InterruptHandler interruptHandler(&interruptMediator, mmu, &registers);
 gb_lib::Cpu cpu(&interruptHandler, mmu, &registers, &speedModeHandler);
 gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu->getIORegisters(), &ppu, false);
-gb_lib::TimerHandler timerHandler(&interruptHandler, mmu, &timerMediator);
 
 uint8_t code = 0;
 gb_lib::Instruction* instruction = nullptr;
@@ -115,9 +141,11 @@ void tickProgram()
     //
     // // ss << " - LY: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LY);
     // // ss << " - LCDC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LCDC);
-    // // ss << " - TAC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::TAC);
-    // // ss << " - TIMA: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::TIMA);
-    // // ss << " - DIV: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::DIV);
+    //  ss << " - DIV: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::DIV);
+    //  ss << " " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::DIV - 1);
+    //  ss << " - TIMA: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::TIMA);
+    //  ss << " - TMA: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::TMA);
+    //  ss << " - TAC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::TAC);
     // // ss << " - IF: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IF);
     // // ss << " - IE: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IE);
     // // ss << " - FF80: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(0xFF80);
@@ -146,7 +174,7 @@ void tickProgram()
         //     addr += 16;
         // }
         //
-        std::cout << getProgramStateString(instruction, registers);
+        //std::cout << getProgramStateString(instruction, registers);
         std::string input;
         std::getline(std::cin, input);
     }
@@ -163,7 +191,7 @@ void tickProgram()
     }
 
     dmaHandler.tick(consumedCpuCycle);
-    timerHandler.updateTimers(consumedCpuCycle);
+    timerHandler.update(consumedCpuCycle);
     lcdHandler.updateLCD(consumedCpuCycle);
 }
 
