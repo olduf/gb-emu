@@ -1,6 +1,7 @@
 #ifndef _MEMORY_FACTORY_H_
 #define _MEMORY_FACTORY_H_
 
+#include "lib/cpu/interrupt_mediator.hpp"
 #include "lib/memory/cartridge/cartridge_factory.hpp"
 #include "lib/memory/cgb_unused_memory_fea0_feff.hpp"
 #include "lib/memory/cgb_vram.hpp"
@@ -19,11 +20,11 @@ namespace gb_lib {
 class MMUFactory
 {
 public:
-    MMU* create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, TimerMediator* timerMediator, bool isCGB);
+    MMU* create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, InterruptMediator* interruptMediator, TimerMediator* timerMediator, bool isCGB);
 
 private:
     MemorySpace* createHighRam(bool isCGB);
-    MemorySpace* createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, TimerMediator* timerMediator, bool isCGB);
+    MemorySpace* createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, InterruptMediator* interruptMediator, TimerMediator* timerMediator, bool isCGB);
 
 private:
     CartridgeFactory cartridgeFactory;

@@ -5,6 +5,7 @@
 
 #include "lib/cpu/instructions.hpp"
 #include "lib/cpu/interrupt.hpp"
+#include "lib/cpu/interrupt_mediator.hpp"
 #include "lib/cpu/registers.hpp"
 #include "lib/memory/memory_space.hpp"
 #include "lib/memory/memory_location.hpp"
@@ -15,7 +16,7 @@ namespace gb_lib {
 class InterruptHandler
 {
 public:
-    InterruptHandler(MemorySpace* mmu, Registers* registers);
+    InterruptHandler(InterruptMediator* interruptMediator, MemorySpace* mmu, Registers* registers);
 
     void runEI();
     void handleEI();
@@ -28,6 +29,7 @@ public:
 
 private:
     bool needsToEnableInterrupt;
+    InterruptMediator* interruptMediator;
     MemorySpace* mmu;
     Registers* registers;
 };

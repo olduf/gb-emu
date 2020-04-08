@@ -3,6 +3,7 @@
 
 #include "lib/cpu/cpu.hpp"
 #include "lib/cpu/interrupt_handler.hpp"
+#include "lib/cpu/interrupt_mediator.hpp"
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/graphic/lcd_handler.hpp"
 #include "lib/memory/dma/dma_handler.hpp"
@@ -39,6 +40,7 @@ private:
     DMAMediator hdmaMediator;
     HDMAHandler* hdmaHandler;
     InterruptHandler* interruptHandler;
+    InterruptMediator interruptMediator;
     LCDHandler* lcdHandler;
     MemorySpace* mmu;
     PPU* ppu;

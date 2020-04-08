@@ -2,10 +2,11 @@
 
 namespace gb_lib {
 
-IORegisters::IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, TimerMediator* timerMediator, bool isCGB)
+IORegisters::IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, InterruptMediator* interruptMediator, TimerMediator* timerMediator, bool isCGB)
 {
     this->dmaMediator = dmaMediator;
     this->hdmaMediator = hdmaMediator;
+    this->interruptMediator = interruptMediator;
     this->timerMediator = timerMediator;
 
     // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
@@ -49,7 +50,7 @@ uint8_t IORegisters::getByte(uint16_t address)
             return this->registers[effectiveAddress];
             break;
         case 0x0F:
-            return this->registers[effectiveAddress] | 0xE0;
+            return this->interruptMediator->getIF();
             break;
         case 0x10:
         case 0x11:
@@ -180,6 +181,11 @@ uint8_t IORegisters::getByte(uint16_t address)
 
 uint8_t IORegisters::getByteInternal(uint16_t address)
 {
+    if (address == 0xFF0F)
+    {
+        return this->interruptMediator->getIF();
+    }
+
     return this->registers[address & 0x00FF];
 }
 
@@ -212,7 +218,7 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
             this->registers[effectiveAddress] = value;
             break;
         case 0x0F:
-            this->registers[effectiveAddress] = (this->registers[effectiveAddress] & 0xE0) | (value & 0x1F);
+            this->interruptMediator->setIF((this->registers[effectiveAddress] & 0xE0) | (value & 0x1F));
             break;
         case 0x10:
         case 0x11:
@@ -353,7 +359,14 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
 
 void IORegisters::setByteInternal(uint16_t address, uint8_t value)
 {
-    this->registers[address & 0x00FF] = value;
+    if (address == 0xFF0F)
+    {
+        this->interruptMediator->setIF(value);
+    }
+    else
+    {
+        this->registers[address & 0x00FF] = value;
+    }
 }
 
 }

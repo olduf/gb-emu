@@ -17,9 +17,9 @@ GameBoy::GameBoy(const char* romPath)
     bool isCGB = false; // TODO
 
     MMUFactory mmuFactory;
-    this->mmu = mmuFactory.create(rom, romSize, &(this->dmaMediator),  &(this->hdmaMediator), &(this->timerMediator), isCGB);
+    this->mmu = mmuFactory.create(rom, romSize, &(this->dmaMediator),  &(this->hdmaMediator), &(this->interruptMediator), &(this->timerMediator), isCGB);
 
-    this->interruptHandler = new InterruptHandler(this->mmu, &(this->registers));
+    this->interruptHandler = new InterruptHandler(&(this->interruptMediator), this->mmu, &(this->registers));
     this->speedModeHandler = new SpeedModeHandler(this->mmu);
 
     this->dmaHandler = new DMAHandler(this->mmu, &(this->dmaMediator), this->speedModeHandler);

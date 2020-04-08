@@ -12,6 +12,7 @@
 #include "lib/cpu/cpu.hpp"
 #include "lib/cpu/instructions.hpp"
 #include "lib/cpu/interrupt_handler.hpp"
+#include "lib/cpu/interrupt_mediator.hpp"
 #include "lib/cpu/registers.hpp"
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/gameboy.hpp"
@@ -57,7 +58,8 @@ gb_lib::DMAMediator dmaMediator;
 gb_lib::NullMediator hdmaMediator;
 gb_lib::MMUFactory mmuFactory;
 gb_lib::TimerMediator timerMediator;
-gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, &hdmaMediator, &timerMediator, false);
+gb_lib::InterruptMediator interruptMediator;
+gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, &hdmaMediator, &interruptMediator, &timerMediator, false);
 gb_lib::Registers registers;
 gb_lib::SpeedModeHandler speedModeHandler(mmu);
 gb_lib::DMAHandler dmaHandler(mmu, &dmaMediator, &speedModeHandler);
@@ -65,7 +67,7 @@ gb_lib::HDMAHandler hdmaHandler(mmu, &hdmaMediator, &speedModeHandler);
 gb_lib::PPU ppu(mmu, nullptr);
 
 
-gb_lib::InterruptHandler interruptHandler(mmu, &registers);
+gb_lib::InterruptHandler interruptHandler(&interruptMediator, mmu, &registers);
 gb_lib::Cpu cpu(&interruptHandler, mmu, &registers, &speedModeHandler);
 gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu->getIORegisters(), &ppu, false);
 gb_lib::TimerHandler timerHandler(&interruptHandler, mmu, &timerMediator);

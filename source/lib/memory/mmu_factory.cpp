@@ -5,11 +5,11 @@
 
 namespace gb_lib {
 
-MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, TimerMediator* timerMediator, bool isCGB)
+MMU* MMUFactory::create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, InterruptMediator* interruptMediator, TimerMediator* timerMediator, bool isCGB)
 {
     MemorySpace* cartridge = this->cartridgeFactory.create(rom, romSize);
     MemorySpace* highRam = this->createHighRam(isCGB);
-    MemorySpace* ioRegisters = this->createIORegisters(dmaMediator, hdmaMediator, timerMediator, isCGB);
+    MemorySpace* ioRegisters = this->createIORegisters(dmaMediator, hdmaMediator, interruptMediator, timerMediator, isCGB);
     MemorySpace* oam = new OAM(ioRegisters);
 
     MemorySpace* unusedMemoryFEA0_FEFF = nullptr;
@@ -91,9 +91,9 @@ MemorySpace* MMUFactory::createHighRam(bool isCGB)
     return highRam;
 }
 
-MemorySpace* MMUFactory::createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, TimerMediator* timerMediator, bool isCGB)
+MemorySpace* MMUFactory::createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, InterruptMediator* interruptMediator, TimerMediator* timerMediator, bool isCGB)
 {
-    MemorySpace* ioRegisters = new IORegisters(dmaMediator, hdmaMediator, timerMediator, isCGB);
+    MemorySpace* ioRegisters = new IORegisters(dmaMediator, hdmaMediator, interruptMediator, timerMediator, isCGB);
 
     ioRegisters->setByteInternal(0xFF05, 0x00); // TIMA
     ioRegisters->setByteInternal(0xFF06, 0x00); // TMA
