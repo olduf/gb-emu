@@ -5,7 +5,7 @@ namespace gb_lib {
 
 MBC1::MBC1(uint8_t* data, uint32_t ramSize, uint32_t romSize, uint32_t numberOfRamBanks, uint32_t numberOfRomBanks)
 {
-    printf("ramSize: %u romSize: %u, numberOfRamBanks: %u, numberOfRomBanks: %u\n", ramSize, romSize, numberOfRamBanks, numberOfRomBanks);
+    // printf("ramSize: %u romSize: %u, numberOfRamBanks: %u, numberOfRomBanks: %u\n", ramSize, romSize, numberOfRamBanks, numberOfRomBanks);
     this->externalRamEnabled = false;
     this->memoryModel = 0;
 
@@ -66,7 +66,7 @@ uint8_t MBC1::getByte(uint16_t address)
 
 void MBC1::setByte(uint16_t address, uint8_t value)
 {
-    printf("writing value 0x%02X to 0x%04X, memory model: %u\n", value, address, this->memoryModel);
+    // printf("writing value 0x%02X to 0x%04X, memory model: %u\n", value, address, this->memoryModel);
     uint8_t newBankValue;
 
     switch (address & 0xF000)

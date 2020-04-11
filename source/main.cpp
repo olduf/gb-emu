@@ -3,337 +3,160 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
-#include <cmath>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-
-#include "lib/cpu/cpu.hpp"
-#include "lib/cpu/instructions.hpp"
-#include "lib/cpu/interrupt_handler.hpp"
-#include "lib/cpu/registers.hpp"
-#include "lib/cpu/speedmode_handler.hpp"
 #include "lib/gameboy.hpp"
-#include "lib/graphic/lcd_handler.hpp"
-#include "lib/graphic/ppu.hpp"
-#include "lib/memory/dma/dma_handler.hpp"
-#include "lib/memory/dma/hdma_handler.hpp"
-#include "lib/memory/dma/null_mediator.hpp"
-#include "lib/memory/mmu_factory.hpp"
-#include "lib/timer/timer_handler.hpp"
 
 int defaultMain();
-int sfmlMain();
-
-std::string getProgramStateString(gb_lib::Instruction* instruction, gb_lib::Registers& registers);
-uint32_t loadFile(const char* filePath, uint8_t** buffer);
-void tickProgram();
+//int sfmlMain();
 
 uint8_t* rom = nullptr;
-// failed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/cpu_instrs.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/01-special.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/02-interrupts.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/03-op sp,hl.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/04-op r,imm.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/05-op rp.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/06-ld r,r.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/07-jr,jp,call,ret,rst.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/08-misc instrs.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/09-op r,r.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/10-bit ops.gb", &rom);
-// passed - */uint32_t romSize = loadFile("./roms/test/cpu_instrs/individual/11-op a,(hl).gb", &rom);
+// failed - cpu_instrs/cpu_instrs.gb
+// passed - cpu_instrs/individual/01-special.gb
+// passed - cpu_instrs/individual/02-interrupts.gb
+// passed - cpu_instrs/individual/03-op sp,hl.gb
+// passed - cpu_instrs/individual/04-op r,imm.gb
+// passed - cpu_instrs/individual/05-op rp.gb
+// passed - cpu_instrs/individual/06-ld r,r.gb
+// passed - cpu_instrs/individual/07-jr,jp,call,ret,rst.gb
+// passed - cpu_instrs/individual/08-misc instrs.gb
+// passed - cpu_instrs/individual/09-op r,r.gb
+// passed - cpu_instrs/individual/10-bit ops.gb
+// passed - cpu_instrs/individual/11-op a,(hl).gb
 
-// failed - */uint32_t romSize = loadFile("./roms/test/instr_timing/instr_timing.gb", &rom);
-// failed - */uint32_t romSize = loadFile("./roms/test/interrupt_time/interrupt_time.gb", &rom);
-// failed - */uint32_t romSize = loadFile("./roms/test/mem_timing/mem_timing.gb", &rom);
-// failed - */uint32_t romSize = loadFile("./roms/test/mem_timing-2/mem_timing.gb", &rom);
+// failed - instr_timing/instr_timing.gb
 
-// passed - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/instr/daa.gb", &rom);
+// passed - mooneye/acceptance/timer/div_write.gb
+// failed - mooneye/acceptance/timer/rapid_toggle.gb
+// failed - mooneye/acceptance/timer/tim00.gb
+// failed - mooneye/acceptance/timer/tim00_div_trigger.gb
+// failed - mooneye/acceptance/timer/tim01.gb
+// failed - mooneye/acceptance/timer/tim01_div_trigger.gb
+// failed - mooneye/acceptance/timer/tim10.gb
+// failed - mooneye/acceptance/timer/tim10_div_trigger.gb
+// failed - mooneye/acceptance/timer/tim11.gb
+// failed - mooneye/acceptance/timer/tim11_div_trigger.gb
+// failed - mooneye/acceptance/timer/tima_reload.gb
+// failed - mooneye/acceptance/timer/tima_write_reloading.gb
+// failed - mooneye/acceptance/timer/tma_write_reloading.gb
 
-// passed - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/div_write.gb", &rom);
-/*/ failed - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/rapid_toggle.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim00_div_trigger.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim00.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim01_div_trigger.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim01.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim10_div_trigger.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim10.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim11_div_trigger.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tim11.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tima_reload.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tima_write_reloading.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/acceptance/timer/tma_write_reloading.gb", &rom);
 
-// passed - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/bits_bank1.gb", &rom);
-// failed - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/bits_bank2.gb", &rom);
-// failed - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/bits_mode.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/bits_ramg.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/multicart_rom_8Mb.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_64kb.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_256kb.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_1Mb.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_2Mb.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_4Mb.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_8Mb.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_16Mb.gb", &rom);
-// unknow - */uint32_t romSize = loadFile("./roms/test/mooneye/emulator-only/mbc1/ram_512kb.gb", &rom);
 
-//uint32_t romSize = loadFile("./roms/tetris.gb", &rom);
 bool debug = false;
+gb_lib::GameBoy* gameboy;
 
-gb_lib::DMAMediator dmaMediator;
-gb_lib::NullMediator hdmaMediator;
-gb_lib::MMUFactory mmuFactory;
-gb_lib::InterruptMediator interruptMediator;
-gb_lib::TimerHandler timerHandler(&interruptMediator);
-gb_lib::MMU* mmu = mmuFactory.create(rom, romSize, &dmaMediator, &hdmaMediator, &interruptMediator, &timerHandler, false);
-gb_lib::Registers registers;
-gb_lib::SpeedModeHandler speedModeHandler(mmu);
-gb_lib::DMAHandler dmaHandler(mmu, &dmaMediator, &speedModeHandler);
-gb_lib::HDMAHandler hdmaHandler(mmu, &hdmaMediator, &speedModeHandler);
-gb_lib::PPU ppu(mmu, nullptr);
-
-gb_lib::InterruptHandler interruptHandler(&interruptMediator, mmu, &registers);
-gb_lib::Cpu cpu(&interruptHandler, mmu, &registers, &speedModeHandler);
-gb_lib::LCDHandler lcdHandler(&interruptHandler, mmu->getIORegisters(), &ppu, false);
-
-uint8_t code = 0;
-gb_lib::Instruction* instruction = nullptr;
-//gb_lib::GameBoy gb("./roms/tetris.gb");
-
-int main()
+int main(int argc, char** argv)
 {
-    return defaultMain();
-
-    //return sfmlMain();
-}
-
-void tickProgram()
-{
-    uint16_t cb = 0;
-    uint16_t pc = registers.getPC();
-    code = mmu->getByte(pc);
-    if (code == 0xCB)
+    if (argc >= 2)
     {
-        instruction = gb_lib::instructions[1][mmu->getByte(pc + 1)];
-        cb = 1;
-    }
-    else
-    {
-        instruction = gb_lib::instructions[0][code];
-    }
+        gameboy = new gb_lib::GameBoy(argv[1]);
 
-    // std::stringstream ss;
-    // ss << "PC: " << std::setw(4) << std::setfill('0') << std::hex << pc << ", operation: " << instruction->getLabel();
-    //
-    // if (cb == 0) {
-    //     if (instruction->getArgumentLength() == 1)
-    //     {
-    //           ss << " (n = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
-    //     }
-    //     else if (instruction->getArgumentLength() == 2)
-    //     {
-    //           ss << " (nn = " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 2);
-    //           ss << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(pc + cb + 1) << ")";
-    //     }
-    // }
-    //
-    // // ss << " - LY: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LY);
-    // // ss << " - LCDC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LCDC);
-    //  ss << " - DIV: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::DIV);
-    //  ss << " " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::DIV - 1);
-    //  ss << " - TIMA: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::TIMA);
-    //  ss << " - TMA: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::TMA);
-    //  ss << " - TAC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::TAC);
-    // // ss << " - IF: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IF);
-    // // ss << " - IE: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IE);
-    // // ss << " - FF80: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(0xFF80);
-    // ss << " AF: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getAF() << ", ";
-    // ss << "BC: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getBC() << ", ";
-    // ss << "DE: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getDE() << ", ";
-    // ss << "HL: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getHL() << ", ";
-    // ss << "SP: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getSP() << ", ";
-    // ss << "PC: " << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getPC() << ", ";
-    // ss << "IME: " << registers.isIME();
-    // ss <<  "\n";
-    // std::cout << ss.str();
-
-    if (/*pc == 0x02CA || pc == 0x0040 || pc == 0x0281 || pc == 0x29DC*/ debug)
-    {debug = true;
-        // uint16_t addr = 0x8000;
-        // printf("\n");
-        // while (addr < 0x8800) {
-        //     printf("%04X: ", addr);
-        //
-        //     for (uint16_t i = 0; i < 16; i++) {
-        //       printf("%02X ", mmu->getByte(addr + i));
-        //     }
-        //
-        //     printf("\n");
-        //     addr += 16;
-        // }
-        //
-        //std::cout << getProgramStateString(instruction, registers);
-        std::string input;
-        std::getline(std::cin, input);
-    }
-
-    uint32_t consumedCpuCycle = 4;
-
-    if (hdmaHandler.isTransferInProgress())
-    {
-        hdmaHandler.tick(consumedCpuCycle);
-    }
-    else
-    {
-        consumedCpuCycle = cpu.tick();
-    }
-
-    dmaHandler.tick(consumedCpuCycle);
-    timerHandler.update(consumedCpuCycle);
-    lcdHandler.updateLCD(consumedCpuCycle);
-}
-
-std::string getProgramStateString(gb_lib::Instruction* instruction, gb_lib::Registers& registers)
-{
-    std::stringstream ss;
-
-    ss << "CPU Registers:\n";
-    ss << "AF: 0x" << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getAF() << ", ";
-    ss << "BC: 0x" << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getBC() << ", ";
-    ss << "DE: 0x" << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getDE() << ", ";
-    ss << "HL: 0x" << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getHL() << ", ";
-    ss << "SP: 0x" << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getSP() << ", ";
-    ss << "PC: 0x" << std::setw(4) << std::setfill('0') << std::uppercase << std::hex << registers.getPC() << ", ";
-    ss << "IME: " << registers.isIME() << "\n";
-
-    return ss.str();
-}
-
-uint32_t loadFile(const char* filePath, uint8_t** buffer)
-{
-    FILE* file = fopen(filePath, "rb");
-    uint32_t sizeOfFile = 0;
-
-    if (file) {
-        fseek(file, 0, SEEK_END);
-        sizeOfFile = ftell(file);
-        fseek(file, 0, SEEK_SET);
-
-        *buffer = new uint8_t[sizeOfFile];
-
-        fread(*buffer, 1, sizeOfFile, file);
-        fclose(file);
-    }
-
-    file = nullptr;
-
-    return sizeOfFile;
-}
-
-int defaultMain()
-{
-    //std::cout << getProgramStateString(instruction, registers);
-
-    bool loop = true;
-    while (loop)
-    {
-        tickProgram();
+        return defaultMain();
     }
 
     return 0;
 }
 
-int sfmlMain()
+int defaultMain()
 {
-  // Create the main window
-  sf::RenderWindow window(sf::VideoMode(1080, 768), "GBEMU");
+    bool loop = true;
 
-  // Set the Icon
-  sf::Image icon;
-  if (!icon.loadFromFile(std::string("./resources/icon.png"))) {
-      return EXIT_FAILURE;
-  }
-  window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+    while (loop)
+    {
+        gameboy->stepInstruction();
+    }
 
-  // Create a graphical text to display
-  sf::Font font;
-  if (!font.loadFromFile(std::string("./resources/sansation.ttf"))) {
-      return EXIT_FAILURE;
-  }
-  sf::Text text(getProgramStateString(instruction, registers), font, 24);
-  text.setFillColor(sf::Color::White);
-  text.setPosition(6, 312);
-
-  // Load a sprite to display
-  sf::Texture texture;
-  if (!texture.create(160, 144)) {
-      return EXIT_FAILURE;
-  }
-
-  // pixel is what we're going to update
-  sf::Uint8* pixels = new sf::Uint8[160 * 144 * 4];
-  for (int i = 0; i < 160 * 144 * 4; i++)
-  {
-      pixels[i] = 0xFF;
-  }
-  texture.update(pixels);
-
-  // Screen
-  sf::RectangleShape screen(sf::Vector2f(332, 288));
-  screen.setOutlineThickness(10);
-  screen.setOutlineColor(sf::Color(250, 150, 100));
-  screen.setPosition(16, 16);
-  screen.setTexture(&texture);
-  screen.setTextureRect(sf::IntRect(500, 800, 160, 144));
-
-  // Start the game loop
-  while (window.isOpen())
-  {
-      // Process events
-      sf::Event event;
-      while (window.pollEvent(event))
-      {
-          // Close window: exit
-          if (event.type == sf::Event::Closed)
-          {
-              window.close();
-          }
-
-          // Escape pressed: exit
-          if (event.type == sf::Event::KeyPressed)
-          {
-              if (event.key.code == sf::Keyboard::Enter)
-              {
-                  tickProgram();
-                  text.setString(getProgramStateString(instruction, registers));
-              }
-              else if (event.key.code == sf::Keyboard::Escape)
-              {
-                  window.close();
-              }
-          }
-      }
-
-      // Clear screen
-      window.clear(sf::Color::Black);
-
-      // Draw the string
-      window.draw(text);
-
-      // Draw the screen
-      window.draw(screen);
-
-      // Update the window
-      window.display();
-  }
-
-  return EXIT_SUCCESS;
+    return 0;
 }
+//
+// int sfmlMain()
+// {
+//   // Create the main window
+//   sf::RenderWindow window(sf::VideoMode(1080, 768), "GBEMU");
+//
+//   // Set the Icon
+//   sf::Image icon;
+//   if (!icon.loadFromFile(std::string("./resources/icon.png"))) {
+//       return EXIT_FAILURE;
+//   }
+//   window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+//
+//   // Create a graphical text to display
+//   sf::Font font;
+//   if (!font.loadFromFile(std::string("./resources/sansation.ttf"))) {
+//       return EXIT_FAILURE;
+//   }
+//   sf::Text text(getProgramStateString(instruction, registers), font, 24);
+//   text.setFillColor(sf::Color::White);
+//   text.setPosition(6, 312);
+//
+//   // Load a sprite to display
+//   sf::Texture texture;
+//   if (!texture.create(160, 144)) {
+//       return EXIT_FAILURE;
+//   }
+//
+//   // pixel is what we're going to update
+//   sf::Uint8* pixels = new sf::Uint8[160 * 144 * 4];
+//   for (int i = 0; i < 160 * 144 * 4; i++)
+//   {
+//       pixels[i] = 0xFF;
+//   }
+//   texture.update(pixels);
+//
+//   // Screen
+//   sf::RectangleShape screen(sf::Vector2f(332, 288));
+//   screen.setOutlineThickness(10);
+//   screen.setOutlineColor(sf::Color(250, 150, 100));
+//   screen.setPosition(16, 16);
+//   screen.setTexture(&texture);
+//   screen.setTextureRect(sf::IntRect(500, 800, 160, 144));
+//
+//   // Start the game loop
+//   while (window.isOpen())
+//   {
+//       // Process events
+//       sf::Event event;
+//       while (window.pollEvent(event))
+//       {
+//           // Close window: exit
+//           if (event.type == sf::Event::Closed)
+//           {
+//               window.close();
+//           }
+//
+//           // Escape pressed: exit
+//           if (event.type == sf::Event::KeyPressed)
+//           {
+//               if (event.key.code == sf::Keyboard::Enter)
+//               {
+//                   tickProgram();
+//                   text.setString(getProgramStateString(instruction, registers));
+//               }
+//               else if (event.key.code == sf::Keyboard::Escape)
+//               {
+//                   window.close();
+//               }
+//           }
+//       }
+//
+//       // Clear screen
+//       window.clear(sf::Color::Black);
+//
+//       // Draw the string
+//       window.draw(text);
+//
+//       // Draw the screen
+//       window.draw(screen);
+//
+//       // Update the window
+//       window.display();
+//   }
+//
+//   return EXIT_SUCCESS;
+// }
 
 #endif
 
+// #include <cmath>
 // Play sound
 // const unsigned SAMPLES = 44100;
 // const unsigned SAMPLE_RATE = 44100;

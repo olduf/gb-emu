@@ -20,7 +20,7 @@ SCENARIO( "InterruptMediator test", "[InterruptMediator]" ) {
             interruptMediator.setIF(0x07);
             uint8_t ifValue3 = interruptMediator.getIF();
 
-            THEN( "the upper 3 bits should be 1" ) {
+            THEN( "the upper 3 bits(unused) should be 1" ) {
                 REQUIRE( ifValue1 == 0xE0);
                 REQUIRE( ifValue2 == 0xFF);
                 REQUIRE( ifValue3 == 0xE7);

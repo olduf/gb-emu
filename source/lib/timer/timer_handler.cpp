@@ -6,7 +6,7 @@ TimerHandler::TimerHandler(InterruptMediator* interruptMediator)
 {
     this->interruptMediator = interruptMediator;
     this->divGotReset = false;
-    this->div = 0;
+    this->div = 0xABCC; // DMG
     this->tima = 0;
     this->tma = 0;
     this->tac = 0;
@@ -19,7 +19,7 @@ uint16_t TimerHandler::getDiv()
 
 void TimerHandler::setDiv(uint16_t div)
 {
-    if (this->isSelectedTimerBitUp(this->div, this->getTimerFrequency(this->tac)))
+    if (this->isTimerEnabled(this->tac) && this->isSelectedTimerBitUp(this->div, this->getTimerFrequency(this->tac)))
     {
         this->increaseTimer();
     }
@@ -55,20 +55,7 @@ uint8_t TimerHandler::getTac()
 
 void TimerHandler::setTac(uint8_t tac)
 {
-    if (this->isTimerEnabled(this->tac))
-    {
-        bool newTimerEnabled = this->isTimerEnabled(tac);
-        uint32_t oldFrequency = this->getTimerFrequency(this->tac);
-
-        if (
-            (!newTimerEnabled && this->isSelectedTimerBitUp(this->div, oldFrequency)) ||
-            (newTimerEnabled && this->didTimerBitChangeFromOneToZero(this->div, this->div, oldFrequency, this->getTimerFrequency(tac)))
-        )
-        {
-            this->increaseTimer();
-        }
-    }
-
+    this->handleSetTacGlitch(tac);
 
     this->tac = tac;
 }
@@ -114,6 +101,62 @@ bool TimerHandler::isTimerEnabled(uint8_t tac)
 bool TimerHandler::isSelectedTimerBitUp(uint16_t divValue, uint32_t timerFrequency)
 {
     return (divValue & this->timerIncreaseMask & (timerFrequency >> 1)) != 0;
+}
+
+void TimerHandler::handleSetTacGlitch(uint8_t newTac)
+{
+    bool oldTimerEnabled = this->isTimerEnabled(this->tac);
+    bool newTimerEnabled = this->isTimerEnabled(tac);
+
+    uint32_t oldHalfTimerMask = this->getTimerFrequency(this->tac) >> 1;
+    uint32_t newHalfTimerMask = this->getTimerFrequency(tac) >> 1;
+    uint32_t glitch = 0;
+
+    // IF DMG
+    if (oldTimerEnabled == false)
+    {
+        glitch = 0;
+    }
+    else
+    {
+        if (newTimerEnabled == false)
+        {
+            glitch = this->div & oldHalfTimerMask;
+        }
+        else
+        {
+            glitch = (this->div & oldHalfTimerMask) && ((this->div & newHalfTimerMask) == 0);
+        }
+    }
+
+    // ELSE CGB
+    // if (oldTimerEnabled == false)
+    // {
+    //     if (newTimerEnabled == false)
+    //     {
+    //         glitch = 0;
+    //     }
+    //     else
+    //     {
+    //         glitch = (this->div & oldHalfTimerMask) && ((this->div & newHalfTimerMask) == 0);
+    //     }
+    // }
+    // else
+    // {
+    //     if (newTimerEnabled == false)
+    //     {
+    //         glitch = this->div & oldHalfTimerMask;
+    //     }
+    //     else
+    //     {
+    //         glitch = (this->div & oldHalfTimerMask) && ((this->div & newHalfTimerMask) == 0);
+    //     }
+    // }
+
+    if (glitch)
+    {
+        this->increaseTimer();
+    }
 }
 
 // specific to the way thing are done in this emulator

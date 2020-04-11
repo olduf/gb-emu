@@ -34,6 +34,7 @@ private:
     uint32_t adjustConsumedCpuCycles(uint32_t consumedCpuCycles);
     uint32_t getTimerFrequency(uint8_t tac);
 
+    void handleSetTacGlitch(uint8_t newTac);
     void increaseTimer();
 
 private:
