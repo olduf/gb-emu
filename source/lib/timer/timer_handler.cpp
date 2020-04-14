@@ -6,7 +6,7 @@ TimerHandler::TimerHandler(InterruptMediator* interruptMediator)
 {
     this->interruptMediator = interruptMediator;
     this->divGotReset = false;
-    this->div = 0xABCC; // DMG
+    this->div = 0; // DMG
     this->tima = 0;
     this->tma = 0;
     this->tac = 0;
@@ -106,10 +106,10 @@ bool TimerHandler::isSelectedTimerBitUp(uint16_t divValue, uint32_t timerFrequen
 void TimerHandler::handleSetTacGlitch(uint8_t newTac)
 {
     bool oldTimerEnabled = this->isTimerEnabled(this->tac);
-    bool newTimerEnabled = this->isTimerEnabled(tac);
+    bool newTimerEnabled = this->isTimerEnabled(newTac);
 
     uint32_t oldHalfTimerMask = this->getTimerFrequency(this->tac) >> 1;
-    uint32_t newHalfTimerMask = this->getTimerFrequency(tac) >> 1;
+    uint32_t newHalfTimerMask = this->getTimerFrequency(newTac) >> 1;
     uint32_t glitch = 0;
 
     // IF DMG
