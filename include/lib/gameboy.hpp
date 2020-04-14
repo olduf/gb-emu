@@ -44,8 +44,10 @@ private:
     PPU* ppu;
     // pixel processing unit
     Registers registers;
+    SetTacAuditor* setTacAuditor;
     SpeedModeHandler* speedModeHandler;
     TimerHandler* timerHandler;
+    TimerUtil timerUtil;
     uint32_t cpuCycle;
 
 private:

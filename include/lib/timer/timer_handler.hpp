@@ -3,14 +3,14 @@
 
 #include <cstdint>
 #include "lib/cpu/interrupt_mediator.hpp"
-#include "lib/util/bit_util.hpp"
+#include "lib/timer/set_tac_auditor.hpp"
 
 namespace gb_lib {
 
 class TimerHandler
 {
 public:
-    TimerHandler(InterruptMediator* interruptMediator);
+    TimerHandler(InterruptMediator* interruptMediator, SetTacAuditor* setTacAuditor, TimerUtil* timerUtil);
 
     uint16_t getDiv();
     void setDiv(uint16_t div);
@@ -27,27 +27,22 @@ public:
     void update(uint32_t consumedCpuCycle);
 
 private:
-    bool didTimerBitChangeFromOneToZero(uint16_t divValue1, uint16_t divValue2, uint32_t timerFrequency1, uint32_t timerFrequency2);
-    bool isTimerEnabled(uint8_t tac);
-    bool isSelectedTimerBitUp(uint16_t divValue, uint32_t timerFrequency);
-
     uint32_t adjustConsumedCpuCycles(uint32_t consumedCpuCycles);
-    uint32_t getTimerFrequency(uint8_t tac);
-
-    void handleSetTacGlitch(uint8_t newTac);
     void increaseTimer();
 
 private:
-    bool divGotReset;
+    bool divJustReset;
+    bool tacJustSet;
+    bool timaCircuitUp;
+
     InterruptMediator* interruptMediator;
+    SetTacAuditor* setTacAuditor;
+    TimerUtil* timerUtil;
+
     uint16_t div;
     uint8_t tima;
     uint8_t tma;
     uint8_t tac;
-
-private:
-    const uint32_t timerFrequencies[4] = { 1024, 16, 64, 256 };
-    const uint16_t timerIncreaseMask = 0x02A8; // 0b0000001010101000
 };
 
 }

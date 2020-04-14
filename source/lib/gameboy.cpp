@@ -17,7 +17,9 @@ GameBoy::GameBoy(const char* romPath)
     bool isCGB = false; // TODO
 
     MMUFactory mmuFactory;
-    this->timerHandler = new TimerHandler(&(this->interruptMediator));
+    this->setTacAuditor = new SetTacAuditor(&(this->timerUtil));
+
+    this->timerHandler = new TimerHandler(&(this->interruptMediator), this->setTacAuditor, &(this->timerUtil));
     this->mmu = mmuFactory.create(rom, romSize, &(this->dmaMediator),  &(this->hdmaMediator), &(this->interruptMediator), this->timerHandler, isCGB);
 
     this->interruptHandler = new InterruptHandler(&(this->interruptMediator), this->mmu, &(this->registers));
@@ -30,6 +32,9 @@ GameBoy::GameBoy(const char* romPath)
 
     this->lcdHandler = new LCDHandler(this->interruptHandler, this->mmu, this->ppu, isCGB);
 }
+SetTacAuditor* setTacAuditor;
+
+TimerUtil timerUtil;
 
 GameBoy::~GameBoy()
 {
@@ -56,6 +61,9 @@ GameBoy::~GameBoy()
 
     delete this->ppu;
     this->ppu = nullptr;
+
+    delete this->setTacAuditor;
+    this->setTacAuditor = nullptr;
 
     delete this->speedModeHandler;
     this->speedModeHandler = nullptr;

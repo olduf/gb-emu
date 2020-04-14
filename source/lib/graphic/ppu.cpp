@@ -53,7 +53,7 @@ void PPU::drawScanLine(
     //   printf("tileDataAddress: 0x%04X\n", tileDataAddress);
     //   for (int i = 0; i < 144; i++) {
     //     for (int j = 0; j < 160; j++) {
-    //       printf("%02X ", this->buffer[i * 160 + j]);
+    //       printf("%01X", this->buffer[i * 160 + j]);
     //     }
     //     printf("\n");
     //   }

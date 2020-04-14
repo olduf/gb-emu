@@ -1,12 +1,18 @@
 #include "lib/timer/timer_handler.hpp"
+#include <cstdio>
 
 namespace gb_lib {
 
-TimerHandler::TimerHandler(InterruptMediator* interruptMediator)
+TimerHandler::TimerHandler(InterruptMediator* interruptMediator, SetTacAuditor* setTacAuditor, TimerUtil* timerUtil)
 {
     this->interruptMediator = interruptMediator;
-    this->divGotReset = false;
-    this->div = 0; // DMG
+    this->setTacAuditor = setTacAuditor;
+    this->timerUtil = timerUtil;
+
+    this->divJustReset = false;
+    this->tacJustSet = false;
+    this->timaCircuitUp = false;
+    this->div = 0;
     this->tima = 0;
     this->tma = 0;
     this->tac = 0;
@@ -19,12 +25,13 @@ uint16_t TimerHandler::getDiv()
 
 void TimerHandler::setDiv(uint16_t div)
 {
-    if (this->isTimerEnabled(this->tac) && this->isSelectedTimerBitUp(this->div, this->getTimerFrequency(this->tac)))
+    if (this->timerUtil->isTimaCircuitUp(div, this->tac))
     {
         this->increaseTimer();
     }
 
-    this->divGotReset = true;
+    this->timaCircuitUp = false;
+    this->divJustReset = true;
     this->div = 0;
 }
 
@@ -55,8 +62,12 @@ uint8_t TimerHandler::getTac()
 
 void TimerHandler::setTac(uint8_t tac)
 {
-    this->handleSetTacGlitch(tac);
+    if (this->setTacAuditor->needToIncreaseTima(this->div, this->tac, tac))
+    {
+        this->increaseTimer();
+    }
 
+    this->tacJustSet = true;
     this->tac = tac;
 }
 
@@ -67,113 +78,36 @@ void TimerHandler::update(uint32_t consumedCpuCycles)
 
     this->div += cycleIncrease;
 
-    if (this->isTimerEnabled(this->tac))
+    if (this->timerUtil->isTimerEnabled(this->tac) && !this->tacJustSet)
     {
-        uint32_t timerFrequency = this->getTimerFrequency(this->tac);
-
         for (uint16_t i = 0; i < cycleIncrease; i++)
         {
-            if (this->didTimerBitChangeFromOneToZero(previousDivValue, previousDivValue + 1, timerFrequency, timerFrequency))
+            bool newTimaCircuitUp = this->timerUtil->isTimaCircuitUp(previousDivValue + 1, this->tac);
+
+            if (this->timaCircuitUp && !newTimaCircuitUp)
             {
                 this->increaseTimer();
             }
 
+            this->timaCircuitUp = newTimaCircuitUp;
             previousDivValue++;
         }
     }
-}
 
-bool TimerHandler::didTimerBitChangeFromOneToZero(uint16_t divValue1, uint16_t divValue2, uint32_t timerFrequency1, uint32_t timerFrequency2)
-{
-    // https://gbdev.github.io/pandocs/Timer_Obscure_Behaviour.html#relation-between-timer-and-divider-register
-    // if the bit (determined by timer frequency) goes from HIGH to LOW, increase timer
-    return (
-            this->isSelectedTimerBitUp(divValue1, timerFrequency1) == true &&
-            this->isSelectedTimerBitUp(divValue2, timerFrequency2) == false
-    );
-}
-
-bool TimerHandler::isTimerEnabled(uint8_t tac)
-{
-    return BitUtil::getBit(tac, 2);
-}
-
-bool TimerHandler::isSelectedTimerBitUp(uint16_t divValue, uint32_t timerFrequency)
-{
-    return (divValue & this->timerIncreaseMask & (timerFrequency >> 1)) != 0;
-}
-
-void TimerHandler::handleSetTacGlitch(uint8_t newTac)
-{
-    bool oldTimerEnabled = this->isTimerEnabled(this->tac);
-    bool newTimerEnabled = this->isTimerEnabled(newTac);
-
-    uint32_t oldHalfTimerMask = this->getTimerFrequency(this->tac) >> 1;
-    uint32_t newHalfTimerMask = this->getTimerFrequency(newTac) >> 1;
-    uint32_t glitch = 0;
-
-    // IF DMG
-    if (oldTimerEnabled == false)
-    {
-        glitch = 0;
-    }
-    else
-    {
-        if (newTimerEnabled == false)
-        {
-            glitch = this->div & oldHalfTimerMask;
-        }
-        else
-        {
-            glitch = (this->div & oldHalfTimerMask) && ((this->div & newHalfTimerMask) == 0);
-        }
-    }
-
-    // ELSE CGB
-    // if (oldTimerEnabled == false)
-    // {
-    //     if (newTimerEnabled == false)
-    //     {
-    //         glitch = 0;
-    //     }
-    //     else
-    //     {
-    //         glitch = (this->div & oldHalfTimerMask) && ((this->div & newHalfTimerMask) == 0);
-    //     }
-    // }
-    // else
-    // {
-    //     if (newTimerEnabled == false)
-    //     {
-    //         glitch = this->div & oldHalfTimerMask;
-    //     }
-    //     else
-    //     {
-    //         glitch = (this->div & oldHalfTimerMask) && ((this->div & newHalfTimerMask) == 0);
-    //     }
-    // }
-
-    if (glitch)
-    {
-        this->increaseTimer();
-    }
+    this->tacJustSet = false;
+    this->timaCircuitUp = this->timerUtil->isTimaCircuitUp(this->div, this->tac);
 }
 
 // specific to the way thing are done in this emulator
 uint32_t TimerHandler::adjustConsumedCpuCycles(uint32_t consumedCpuCycle)
 {
-    if (this->divGotReset)
+    if (this->divJustReset)
     {
-        this->divGotReset = false;
+        this->divJustReset = false;
         return 0;
     }
 
     return consumedCpuCycle;
-}
-
-uint32_t TimerHandler::getTimerFrequency(uint8_t tac)
-{
-    return this->timerFrequencies[tac & 3];
 }
 
 void TimerHandler::increaseTimer()

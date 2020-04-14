@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "lib/gameboy.hpp"
+#include <iostream>
 
 int defaultMain();
 //int sfmlMain();
@@ -25,7 +26,7 @@ uint8_t* rom = nullptr;
 // failed - instr_timing/instr_timing.gb
 
 // passed - mooneye/acceptance/timer/div_write.gb
-// failed - mooneye/acceptance/timer/rapid_toggle.gb
+// passed - mooneye/acceptance/timer/rapid_toggle.gb
 // failed - mooneye/acceptance/timer/tim00.gb
 // failed - mooneye/acceptance/timer/tim00_div_trigger.gb
 // failed - mooneye/acceptance/timer/tim01.gb
@@ -37,8 +38,6 @@ uint8_t* rom = nullptr;
 // failed - mooneye/acceptance/timer/tima_reload.gb
 // failed - mooneye/acceptance/timer/tima_write_reloading.gb
 // failed - mooneye/acceptance/timer/tma_write_reloading.gb
-
-
 
 bool debug = false;
 gb_lib::GameBoy* gameboy;
@@ -58,10 +57,14 @@ int main(int argc, char** argv)
 int defaultMain()
 {
     bool loop = true;
+    int i = 1;
 
     while (loop)
     {
+        // printf("%i\n", i++);
         gameboy->stepInstruction();
+        // char c;
+        // std::cin.get(c);
     }
 
     return 0;

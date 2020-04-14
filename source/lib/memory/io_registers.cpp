@@ -373,13 +373,25 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
 
 void IORegisters::setByteInternal(uint16_t address, uint8_t value)
 {
-    if (address == IF)
+    switch (address)
     {
-        this->interruptMediator->setIF(value);
-    }
-    else
-    {
-        this->registers[address & 0x00FF] = value;
+        case DIV:
+            this->timerHandler->setDiv(0);
+            break;
+        case TIMA:
+            this->timerHandler->setTima(value);
+            break;
+        case TMA:
+            this->timerHandler->setTma(value);
+            break;
+        case TAC:
+            this->timerHandler->setTac(value);
+            break;
+        case IF:
+            this->interruptMediator->setIF(value);
+            break;
+        default:
+            this->registers[address & 0x00FF] = value;
     }
 }
 
