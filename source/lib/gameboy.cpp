@@ -20,7 +20,7 @@ GameBoy::GameBoy(const char* romPath)
     this->setTacAuditor = new SetTacAuditor(&(this->timerUtil));
 
     this->timerHandler = new TimerHandler(&(this->interruptMediator), this->setTacAuditor, &(this->timerUtil));
-    this->mmu = mmuFactory.create(rom, romSize, &(this->dmaMediator),  &(this->hdmaMediator), &(this->interruptMediator), this->timerHandler, isCGB);
+    this->mmu = mmuFactory.create(rom, romSize, &(this->dmaMediator),  &(this->hdmaMediator), this->timerHandler, &(this->interruptMediator), isCGB);
 
     this->interruptHandler = new InterruptHandler(&(this->interruptMediator), this->mmu, &(this->registers));
     this->speedModeHandler = new SpeedModeHandler(this->mmu);

@@ -2,12 +2,12 @@
 
 namespace gb_lib {
 
-IORegisters::IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, InterruptMediator* interruptMediator, TimerHandler* timerHandler, bool isCGB)
+IORegisters::IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, MemorySpace* timerHandler, InterruptMediator* interruptMediator, bool isCGB)
 {
     this->dmaMediator = dmaMediator;
     this->hdmaMediator = hdmaMediator;
-    this->interruptMediator = interruptMediator;
     this->timerHandler = timerHandler;
+    this->interruptMediator = interruptMediator;
 
     // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
     // 9.6. FF55H - HDMA5 - GBC Mode - HDMA Length/Mode/Start (R/W)
@@ -34,19 +34,11 @@ uint8_t IORegisters::getByte(uint16_t address)
             return this->registers[effectiveAddress];
             break;
         case 0x03:
-            return this->timerHandler->getDiv() & 0xFF;
-            break;
         case 0x04:
-            return this->timerHandler->getDiv() >> 8;
-            break;
         case 0x05:
-            return this->timerHandler->getTima(false);
-            break;
         case 0x06:
-            return this->timerHandler->getTma();
-            break;
         case 0x07:
-            return this->timerHandler->getTac();
+            return this->timerHandler->getByte(address);
             break;
         case 0x08:
         case 0x09:
@@ -191,14 +183,12 @@ uint8_t IORegisters::getByteInternal(uint16_t address)
 {
     switch (address)
     {
+        case DIV - 1:
         case DIV:
-            return this->timerHandler->getDiv();
         case TIMA:
-            return this->timerHandler->getTima(true);
         case TMA:
-            return this->timerHandler->getTma();
         case TAC:
-            return this->timerHandler->getTac();
+            return this->timerHandler->getByteInternal(address);
         case IF:
             return this->interruptMediator->getIF();
         default:
@@ -218,18 +208,13 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
             this->registers[effectiveAddress] = value;
             break;
         case 0x03:
+            // not sure what to do with this one
             break;
         case 0x04:
-            this->timerHandler->setDiv(0);
-            break;
         case 0x05:
-            this->timerHandler->setTima(value);
-            break;
         case 0x06:
-            this->timerHandler->setTma(value);
-            break;
         case 0x07:
-            this->timerHandler->setTac(value);
+            this->timerHandler->setByte(address, value);
             break;
         case 0x08:
         case 0x09:
@@ -384,17 +369,12 @@ void IORegisters::setByteInternal(uint16_t address, uint8_t value)
 {
     switch (address)
     {
+        case DIV - 1:
         case DIV:
-            this->timerHandler->setDiv(0);
-            break;
         case TIMA:
-            this->timerHandler->setTima(value);
-            break;
         case TMA:
-            this->timerHandler->setTma(value);
-            break;
         case TAC:
-            this->timerHandler->setTac(value);
+            this->timerHandler->setByteInternal(address, value);
             break;
         case IF:
             this->interruptMediator->setIF(value);

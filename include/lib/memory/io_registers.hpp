@@ -13,7 +13,7 @@ namespace gb_lib {
 class IORegisters : public MemorySpace
 {
 public:
-    IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, InterruptMediator* interruptMediator, TimerHandler* timerHandler, bool isCGB);
+    IORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, MemorySpace* timerHandler, InterruptMediator* interruptMediator, bool isCGB);
 
     uint8_t getByte(uint16_t address);
     uint8_t getByteInternal(uint16_t address);
@@ -23,8 +23,8 @@ public:
 private:
     DMAMediator* dmaMediator;
     DMAMediator* hdmaMediator;
+    MemorySpace* timerHandler;
     InterruptMediator* interruptMediator;
-    TimerHandler* timerHandler;
     uint8_t registers[0x80] = {};
     uint8_t FF55Mask = 0;
 };

@@ -20,11 +20,11 @@ namespace gb_lib {
 class MMUFactory
 {
 public:
-    MMU* create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, InterruptMediator* interruptMediator, TimerHandler* timerHandler, bool isCGB);
+    MMU* create(uint8_t* rom, uint32_t romSize, DMAMediator* dmaMediator, DMAMediator* hdmaMediator, MemorySpace* timerHandler, InterruptMediator* interruptMediator, bool isCGB);
 
 private:
     MemorySpace* createHighRam(bool isCGB);
-    MemorySpace* createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, InterruptMediator* interruptMediator, TimerHandler* timerHandler, bool isCGB);
+    MemorySpace* createIORegisters(DMAMediator* dmaMediator, DMAMediator* hdmaMediator, MemorySpace* timerHandler, InterruptMediator* interruptMediator, bool isCGB);
 
 private:
     CartridgeFactory cartridgeFactory;
