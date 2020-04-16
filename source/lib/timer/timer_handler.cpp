@@ -1,5 +1,12 @@
 #include "lib/timer/timer_handler.hpp"
-#include <cstdio>
+
+/*
+ *  In this emulator, cpu instructions are executed as a single block.
+ *  Each components is then updated by the consumed cpu cycles.
+ *
+ *  In real hardware, the timer would be increased in parallel, which means we
+ *  need to be a little hacky to make the timer behave as it should.
+ */
 
 namespace gb_lib {
 
@@ -9,9 +16,11 @@ TimerHandler::TimerHandler(InterruptMediator* interruptMediator, SetTacAuditor* 
     this->setTacAuditor = setTacAuditor;
     this->timerUtil = timerUtil;
 
-    this->divJustReset = false;
-    this->tacJustSet = false;
+    this->valueJustSet = false;
+
     this->timaCircuitUp = false;
+    this->timerWasHandledInternally = false;
+
     this->div = 0;
     this->tima = 0;
     this->tma = 0;
@@ -20,28 +29,38 @@ TimerHandler::TimerHandler(InterruptMediator* interruptMediator, SetTacAuditor* 
 
 uint16_t TimerHandler::getDiv()
 {
+    this->handleTimerInternally();
+
     return this->div;
 }
 
 void TimerHandler::setDiv(uint16_t div)
 {
-    if (this->timerUtil->isTimaCircuitUp(div, this->tac))
+    this->handleTimerInternally();
+
+    if (this->timerUtil->isTimaCircuitUp(this->div, this->tac))
     {
         this->increaseTimer();
     }
 
     this->timaCircuitUp = false;
-    this->divJustReset = true;
+
     this->div = 0;
 }
 
-uint8_t TimerHandler::getTima()
+uint8_t TimerHandler::getTima(bool debug)
 {
+    if (debug) { return this->tima; }
+
+    this->handleTimerInternally();
+
     return this->tima;
 }
 
 void TimerHandler::setTima(uint8_t tima)
 {
+    this->valueJustSet = true;
+
     this->tima = tima;
 }
 
@@ -67,7 +86,7 @@ void TimerHandler::setTac(uint8_t tac)
         this->increaseTimer();
     }
 
-    this->tacJustSet = true;
+    this->valueJustSet = true;
     this->tac = tac;
 }
 
@@ -78,7 +97,7 @@ void TimerHandler::update(uint32_t consumedCpuCycles)
 
     this->div += cycleIncrease;
 
-    if (this->timerUtil->isTimerEnabled(this->tac) && !this->tacJustSet)
+    if (this->timerUtil->isTimerEnabled(this->tac) && !this->valueJustSet)
     {
         for (uint16_t i = 0; i < cycleIncrease; i++)
         {
@@ -94,20 +113,28 @@ void TimerHandler::update(uint32_t consumedCpuCycles)
         }
     }
 
-    this->tacJustSet = false;
+    this->valueJustSet = false;
     this->timaCircuitUp = this->timerUtil->isTimaCircuitUp(this->div, this->tac);
 }
 
 // specific to the way thing are done in this emulator
 uint32_t TimerHandler::adjustConsumedCpuCycles(uint32_t consumedCpuCycle)
 {
-    if (this->divJustReset)
+    if (this->timerWasHandledInternally)
     {
-        this->divJustReset = false;
+        this->timerWasHandledInternally = false;
+
         return 0;
     }
 
     return consumedCpuCycle;
+}
+
+void TimerHandler::handleTimerInternally()
+{
+    this->update(this->instruction_duration);
+
+    this->timerWasHandledInternally = true;
 }
 
 void TimerHandler::increaseTimer()

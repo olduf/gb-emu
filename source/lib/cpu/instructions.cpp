@@ -268,7 +268,7 @@ Instruction* instructions[2][256] = {
         InstructionBuilder(0xF6, 8, 2, std::string("OR A,n")).load(&InstructionArgument::A).orBytes(&InstructionArgument::N).store(&InstructionArgument::A).build(),
         InstructionBuilder(0xF7, 16, 1, std::string("RST 30H")).load(&InstructionArgument::PC).push().scalar(0x30).jump().build(),
         InstructionBuilder(0xF8, 12, 2, std::string("LD HL,SP+n")).load(&InstructionArgument::SP).add(&InstructionArgument::N, AffectFlagsType::U16_S8).setFlagZero(false).store(&InstructionArgument::HL).build(),
-        InstructionBuilder(0xF9, 4, 1, std::string("LD SP,HL")).load(&InstructionArgument::HL).store(&InstructionArgument::SP).build(),
+        InstructionBuilder(0xF9, 8, 1, std::string("LD SP,HL")).load(&InstructionArgument::HL).store(&InstructionArgument::SP).build(),
         InstructionBuilder(0xFA, 16, 3, std::string("LD A,(nn)")).load(&InstructionArgument::_NN).store(&InstructionArgument::A).build(),
         InstructionBuilder(0xFB, 4, 1, std::string("EI")).build(), // handled in cpu because interrupt needs to be enabled AFTER the next instruction
         InstructionBuilder(0xFC, 0, 1, std::string("Invalid Operation")).build(),

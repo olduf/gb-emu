@@ -61,7 +61,7 @@ int defaultMain()
 
     while (loop)
     {
-        // printf("%i\n", i++);
+        // printf("%i - ", i++);
         gameboy->stepInstruction();
         // char c;
         // std::cin.get(c);

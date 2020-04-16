@@ -40,7 +40,7 @@ uint8_t IORegisters::getByte(uint16_t address)
             return this->timerHandler->getDiv() >> 8;
             break;
         case 0x05:
-            return this->timerHandler->getTima();
+            return this->timerHandler->getTima(false);
             break;
         case 0x06:
             return this->timerHandler->getTma();
@@ -189,12 +189,21 @@ uint8_t IORegisters::getByte(uint16_t address)
 
 uint8_t IORegisters::getByteInternal(uint16_t address)
 {
-    if (address == IF)
+    switch (address)
     {
-        return this->interruptMediator->getIF();
+        case DIV:
+            return this->timerHandler->getDiv();
+        case TIMA:
+            return this->timerHandler->getTima(true);
+        case TMA:
+            return this->timerHandler->getTma();
+        case TAC:
+            return this->timerHandler->getTac();
+        case IF:
+            return this->interruptMediator->getIF();
+        default:
+            return this->registers[address & 0x00FF];
     }
-
-    return this->registers[address & 0x00FF];
 }
 
 void IORegisters::setByte(uint16_t address, uint8_t value)
