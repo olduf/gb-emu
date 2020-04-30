@@ -9,6 +9,7 @@ HDMAHandler::HDMAHandler(MemorySpace* mmu, DMAMediator* hdmaMediator, SpeedModeH
     this->mmu = mmu;
     this->hdmaMediator = hdmaMediator;
     this->speedModeHandler = speedModeHandler;
+    this->transferType = HDMATransferType::GENERAL;
 }
 
 void HDMAHandler::tick(uint32_t consumedCpuCycle)

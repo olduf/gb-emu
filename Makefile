@@ -32,7 +32,7 @@ LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 default_target: dev
 
 .PHONY: dev
-dev: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS)
+dev: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS) -DDEBUG
 dev: dirs
 	@$(MAKE) all
 

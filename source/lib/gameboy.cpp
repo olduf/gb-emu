@@ -62,6 +62,9 @@ GameBoy::~GameBoy()
     delete this->ppu;
     this->ppu = nullptr;
 
+    delete this->rom;
+    this->rom = nullptr;
+
     delete this->setTacAuditor;
     this->setTacAuditor = nullptr;
 
@@ -120,11 +123,11 @@ void GameBoy::stepInstruction()
       //
       // // ss << " - LY: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LY);
       // // ss << " - LCDC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::LCDC);
-      //  ss << " - DIV: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::DIV);
-      //  ss << " " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::DIV - 1);
+      //  ss << " - DIV: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::DIV);
+      //  ss << " " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::DIV - 1);
       //  ss << " - TIMA: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::TIMA);
-      //  ss << " - TMA: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::TMA);
-      //  ss << " - TAC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByte(gb_lib::TAC);
+      //  ss << " - TMA: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::TMA);
+      //  ss << " - TAC: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)(mmu->getByteInternal(gb_lib::TAC) | 0xF8);
       // // ss << " - IF: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IF);
       // // ss << " - IE: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(gb_lib::IE);
       // // ss << " - FF80: " << std::setw(2) << std::setfill('0') << std::uppercase << std::hex << (uint16_t)mmu->getByteInternal(0xFF80);

@@ -11,7 +11,6 @@
  * When these happens, the timer is updated internally so that the right values are returned.
  * A flag is set that the timer does not get updated a second time by the main loop.
  */
-
 namespace gb_lib {
 
 TimerHandler::TimerHandler(InterruptMediator* interruptMediator, SetTacAuditor* setTacAuditor, TimerUtil* timerUtil)
@@ -177,7 +176,8 @@ void TimerHandler::increaseTimer()
 {
     if (this->tima == 0xFF)
     {
-        // should be delayed by 4 cpu cycle
+        // TODO - implement tima reloading behavior
+        // https://gbdev.github.io/pandocs/Timer_Obscure_Behaviour.html#timer-overflow-behaviour
         this->tima = this->tma;
         this->interruptMediator->requestInterrupt(Interrupt::TIMER);
     }

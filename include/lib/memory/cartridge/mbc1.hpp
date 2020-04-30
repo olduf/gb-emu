@@ -9,7 +9,7 @@ namespace gb_lib {
 class MBC1 : public MemorySpace
 {
 public:
-    MBC1(uint8_t* data, uint32_t ramSize, uint32_t romSize, uint32_t numberOfRamBanks, uint32_t numberOfRomBanks);
+    MBC1(uint8_t* data, uint32_t ramSize, uint32_t romSize, uint32_t numberOfRomBanks);
     ~MBC1();
 
     uint8_t getByte(uint16_t address);
@@ -17,9 +17,8 @@ public:
 
 private:
     bool externalRamEnabled;
-    uint32_t memoryModel;
+    uint32_t ramMode;
 
-    uint32_t numberOfRamBanks;
     uint32_t ramBank;
     uint32_t ramSize;
 
@@ -31,7 +30,7 @@ private:
     uint8_t* rom;
 
 private:
-    uint16_t getEffectiveRamAddress(uint16_t address);
+    uint32_t getEffectiveRamAddress(uint16_t address);
 };
 
 }

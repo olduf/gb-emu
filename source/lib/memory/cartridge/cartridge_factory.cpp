@@ -28,7 +28,7 @@ MemorySpace* CartridgeFactory::create(uint8_t* rom, uint32_t romFileSize)
         case 0x01:
         case 0x02:
         case 0x03:
-            cartridge = new MBC1(rom, ramSize, romSize, numberOfRamBanks, numberOfRomBanks);
+            cartridge = new MBC1(rom, ramSize, romSize, numberOfRomBanks);
             break;
 
         // // MBC 2
@@ -54,7 +54,7 @@ MemorySpace* CartridgeFactory::create(uint8_t* rom, uint32_t romFileSize)
         // case 0x16: ; break; // MBC4+RAM
         // case 0x17: ; break; // MBC4+RAM+BATTER5
         //
-        // // MBC 3
+        // // MBC 5
         // case 0x19: ; break; // MBC5
         // case 0x1A: ; break; // MBC5+RAM
         // case 0x1B: ; break; // MBC5+RAM+BATTERY
