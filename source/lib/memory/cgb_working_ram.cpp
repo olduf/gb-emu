@@ -27,7 +27,7 @@ uint16_t CGBWorkingRam::getEffectiveAddress(uint16_t address)
     }
     else
     {
-        uint8_t sbvk = this->ioRegisters->getByte(SVBK) & 7;
+        uint8_t sbvk = this->ioRegisters->getByte(SVBK) & 0b00000111;
         if (sbvk == 0)
         {
             sbvk = 1;

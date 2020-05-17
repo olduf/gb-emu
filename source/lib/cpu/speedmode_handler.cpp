@@ -19,9 +19,9 @@ void SpeedModeHandler::handleSpeedMode()
 
     if ((speedModeRegisterValue & 1) == 1)
     {
-        this->mmu->setByte(KEY1, BitUtil::toggleBit(speedModeRegisterValue, 7) & 0xFE);
+        this->mmu->setByte(KEY1, BitUtil::toggleBit(speedModeRegisterValue, 7) & 0b11111110);
 
-        this->speedMode = ((speedModeRegisterValue & 0x80) == 1) ? SpeedMode::NORMAL : SpeedMode::DOUBLE;
+        this->speedMode = ((speedModeRegisterValue & 0b10000000) == 0) ? SpeedMode::DOUBLE : SpeedMode::NORMAL;
     }
 }
 

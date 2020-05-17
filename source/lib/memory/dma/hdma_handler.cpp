@@ -52,7 +52,7 @@ void HDMAHandler::tick(uint32_t consumedCpuCycle)
             }
             else
             {
-                this->mmu->setByteInternal(HDMA5, 0x80 | (static_cast<uint8_t>(this->numberOfBytesToTransfer >> 4) - 1));
+                this->mmu->setByteInternal(HDMA5, 0b10000000 | (static_cast<uint8_t>(this->numberOfBytesToTransfer >> 4) - 1));
             }
         }
     }
@@ -94,13 +94,13 @@ void HDMAHandler::setUpTransfer()
     {
         uint8_t hdma5 = this->mmu->getByteInternal(HDMA5);
 
-        if (static_cast<HDMATransferType>(hdma5 & 0x80) == HDMATransferType::GENERAL)
+        if (static_cast<HDMATransferType>(hdma5 & 0b10000000) == HDMATransferType::GENERAL)
         {
             this->hdmaMediator->requestTransfer(false);
             this->hdmaMediator->setTransferInProgress(false);
             // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
             // 9.6.2 - New bit 7 is 0: Stop copy. HDMA5 new value is (80h OR written_value)
-            this->mmu->setByteInternal(HDMA5, hdma5 | 0x80);
+            this->mmu->setByteInternal(HDMA5, hdma5 | 0b10000000);
         }
         else
         {
@@ -112,18 +112,18 @@ void HDMAHandler::setUpTransfer()
 void HDMAHandler::setInitialTransferState()
 {
     this->hdmaMediator->requestTransfer(false);
-    this->source = (this->mmu->getByteInternal(HDMA1) << 8) | (this->mmu->getByteInternal(HDMA2) & 0xF0);
+    this->source = (this->mmu->getByteInternal(HDMA1) << 8) | (this->mmu->getByteInternal(HDMA2) & 0b11110000);
 
     // source needs to be in rom or external ram
     if (this->source < 0x8000 || (this->source >= 0xA000 && this->source < 0xE000))
     {
         // https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf
         // 9.4, 9.5 - Destination is always VRAM (0x8000 - 0x9FFF). Upper 3 bits and lower 4 bits are ignored.
-        this->destination = ( ((this->mmu->getByteInternal(HDMA3) & 0x1F) << 8) | (this->mmu->getByteInternal(HDMA4) & 0xF0) ) | 0x8000;
+        this->destination = ( ((this->mmu->getByteInternal(HDMA3) & 0b00011111) << 8) | (this->mmu->getByteInternal(HDMA4) & 0b11110000) ) | 0x8000;
 
         uint8_t hdma5 = this->mmu->getByteInternal(HDMA5);
         this->transferType = static_cast<HDMATransferType>(hdma5 & 0x80);
-        this->numberOfBytesToTransfer = ((hdma5 & 0x7F) + 1) * 16;
+        this->numberOfBytesToTransfer = ((hdma5 & 0b01111111) + 1) * 16;
 
         // transfer always takes the same time, speed mode does not matter.
         this->neededCpuCycle = 4 + (this->numberOfBytesToTransfer * 2 * static_cast<uint32_t>(this->speedModeHandler->getSpeedMode()));

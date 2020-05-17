@@ -27,7 +27,7 @@ uint8_t IORegisters::getByte(uint16_t address)
     switch (effectiveAddress)
     {
         case 0x00:
-            return this->registers[effectiveAddress] | 0xC0;
+            return this->registers[effectiveAddress] | 0b11000000;
             break;
         case 0x01:
         case 0x02:
@@ -104,7 +104,7 @@ uint8_t IORegisters::getByte(uint16_t address)
             return this->registers[effectiveAddress];
             break;
         case 0x41:
-            return this->registers[effectiveAddress] | 0x80;
+            return this->registers[effectiveAddress] | 0b10000000;
             break;
         case 0x42:
         case 0x43:
@@ -226,7 +226,7 @@ void IORegisters::setByte(uint16_t address, uint8_t value)
             this->registers[effectiveAddress] = value;
             break;
         case 0x0F:
-            this->interruptMediator->setIF((this->interruptMediator->getIF() & 0xE0) | (value & 0x1F));
+            this->interruptMediator->setIF((this->interruptMediator->getIF() & 0b11100000) | (value & 0b00011111));
             break;
         case 0x10:
         case 0x11:

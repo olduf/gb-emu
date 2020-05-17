@@ -10,9 +10,9 @@ bool Flags::isZero()
 Flags& Flags::setZero(bool zero)
 {
     if (zero) {
-        this->value = BitUtil::setBit(this->value, FLAGS_ZERO_BIT) & 0xF0;
+        this->value = BitUtil::setBit(this->value, FLAGS_ZERO_BIT) & 0b11110000;
     } else {
-        this->value = BitUtil::clearBit(this->value, FLAGS_ZERO_BIT) & 0xF0;
+        this->value = BitUtil::clearBit(this->value, FLAGS_ZERO_BIT) & 0b11110000;
     }
 
     return *this;
@@ -26,9 +26,9 @@ bool Flags::isSubtraction()
 Flags& Flags::setSubtraction(bool subtraction)
 {
     if (subtraction) {
-        this->value = BitUtil::setBit(this->value, FLAGS_SUBTRACTION_BIT) & 0xF0;
+        this->value = BitUtil::setBit(this->value, FLAGS_SUBTRACTION_BIT) & 0b11110000;
     } else {
-        this->value = BitUtil::clearBit(this->value, FLAGS_SUBTRACTION_BIT) & 0xF0;
+        this->value = BitUtil::clearBit(this->value, FLAGS_SUBTRACTION_BIT) & 0b11110000;
     }
 
   return *this;
@@ -42,9 +42,9 @@ bool Flags::isHalfCarry()
 Flags& Flags::setHalfCarry(bool halfCarry)
 {
     if (halfCarry) {
-        this->value = BitUtil::setBit(this->value, FLAGS_HALF_CARRY_BIT) & 0xF0;
+        this->value = BitUtil::setBit(this->value, FLAGS_HALF_CARRY_BIT) & 0b11110000;
     } else {
-        this->value = BitUtil::clearBit(this->value, FLAGS_HALF_CARRY_BIT) & 0xF0;
+        this->value = BitUtil::clearBit(this->value, FLAGS_HALF_CARRY_BIT) & 0b11110000;
     }
 
   return *this;
@@ -58,9 +58,9 @@ bool Flags::isCarry()
 Flags& Flags::setCarry(bool carry)
 {
     if (carry) {
-        this->value = BitUtil::setBit(this->value, FLAGS_CARRY_BIT) & 0xF0;
+        this->value = BitUtil::setBit(this->value, FLAGS_CARRY_BIT) & 0b11110000;
     } else {
-        this->value = BitUtil::clearBit(this->value, FLAGS_CARRY_BIT) & 0xF0;
+        this->value = BitUtil::clearBit(this->value, FLAGS_CARRY_BIT) & 0b11110000;
     }
 
   return *this;
@@ -72,7 +72,7 @@ uint8_t Flags::getValue()
 }
 void Flags::setValue(uint8_t value)
 {
-    this->value = value & 0xF0;
+    this->value = value & 0b11110000;
 }
 
 }

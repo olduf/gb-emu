@@ -14,7 +14,7 @@ bool TimerUtil::isTimaCircuitUp(uint16_t div, uint8_t tac)
 
 uint32_t TimerUtil::getTimerFrequency(uint8_t tac)
 {
-    return this->timerFrequencies[tac & 3];
+    return this->timerFrequencies[tac & 0b00000011];
 }
 
 }

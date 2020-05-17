@@ -87,7 +87,7 @@ void MBC1::setByte(uint16_t address, uint8_t value)
         case 0x0000:
         case 0x1000:
             {
-                if ((value & 0x000F) == 0x0A)
+                if ((value & 0x000F) == 0b00001010)
                 {
                     this->externalRamEnabled = true;
                 }
@@ -102,14 +102,14 @@ void MBC1::setByte(uint16_t address, uint8_t value)
         case 0x2000:
         case 0x3000:
             {
-                newBankValue = value & 0x1F;
+                newBankValue = value & 0b00011111;
 
                 if ((newBankValue % 0x20) == 0)
                 {
                     newBankValue += 1;
                 }
 
-                this->romBank = (this->romBank & 0x60) | newBankValue;
+                this->romBank = (this->romBank & 0b01100000) | newBankValue;
             }
             break;
         // rom bank, upper 2 bits (Bit 5-6) or ram bank (00-03h)
@@ -119,7 +119,7 @@ void MBC1::setByte(uint16_t address, uint8_t value)
 
             if (this->ramMode == 0)
             {
-                this->romBank = (newBankValue << 5) | (this->romBank & 0x1F);
+                this->romBank = (newBankValue << 5) | (this->romBank & 0b00011111);
             }
             else
             {

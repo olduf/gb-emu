@@ -4,7 +4,7 @@ namespace gb_lib {
 
 LCDMode LCDStatusUtil::getLCDMode(uint8_t stat)
 {
-    return static_cast<LCDMode>(stat & 3);
+    return static_cast<LCDMode>(stat & 0b00000011);
 }
 LCDMode LCDStatusUtil::getLCDMode(MemorySpace* ioRegisters)
 {

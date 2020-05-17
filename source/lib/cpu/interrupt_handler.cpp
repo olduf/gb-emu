@@ -36,7 +36,7 @@ bool InterruptHandler::isHaltBugState()
 
 bool InterruptHandler::isInterruptRequested()
 {
-    return (this->interruptMediator->getIF() & this->mmu->getByte(IE) & 0x1F) != 0;
+    return (this->interruptMediator->getIF() & this->mmu->getByte(IE) & 0b00011111) != 0;
 }
 
 Instruction* InterruptHandler::getInterruptInstruction()

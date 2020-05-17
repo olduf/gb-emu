@@ -43,7 +43,7 @@ uint8_t TimerHandler::getByte(uint16_t address)
         case TMA:
             return this->tma;
         case TAC:
-            return this->tac | 0xF8;
+            return this->tac | 0b11111000;
         default:
             return 0;
   }
