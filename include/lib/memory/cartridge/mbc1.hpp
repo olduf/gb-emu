@@ -18,6 +18,7 @@ private:
     bool externalRamEnabled;
     uint32_t ramMode;
 
+    uint32_t numberOfRamBanks;
     uint32_t ramBank;
     uint32_t ramSize;
 

@@ -1,4 +1,4 @@
-# gb-emu
+# gbemu
 Yet another GameBoy emulator
 
 

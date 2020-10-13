@@ -6,8 +6,7 @@ MemorySpace* CartridgeFactory::create(uint8_t* rom, uint32_t romFileSize)
 {
     MemorySpace* cartridge = nullptr;
 
-    uint32_t numberOfRamBanks = this->getNumberOfRamBanks(rom[0x149]);
-    uint32_t ramSize = numberOfRamBanks * 0x2000;
+    uint32_t ramSize = this->getRamSize(rom[0x149]);
 
     uint32_t numberOfRomBanks = this->getNumberOfRomBanks(rom[0x148]);
     uint32_t romSize = numberOfRomBanks * 0x4000;
@@ -71,15 +70,16 @@ MemorySpace* CartridgeFactory::create(uint8_t* rom, uint32_t romFileSize)
     return cartridge;
 }
 
-uint32_t CartridgeFactory::getNumberOfRamBanks(uint8_t valueInHeader)
+uint32_t CartridgeFactory::getRamSize(uint8_t valueInHeader)
 {
     switch (valueInHeader)
     {
         case 0: return 0;
-        case 1: return 1;
-        case 2: return 1;
-        case 3: return 4;
-        case 4: return 16;
+        case 1: return 0x800;
+        case 2: return 0x2000;
+        case 3: return 0x8000;
+        case 4: return 0x20000;
+        case 5: return 0x10000;
     }
 
     return 0;

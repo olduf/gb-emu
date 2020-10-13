@@ -7,6 +7,7 @@ MBC1::MBC1(uint8_t* data, uint32_t ramSize, uint32_t romSize, uint32_t numberOfR
     this->externalRamEnabled = false;
     this->ramMode = 0;
 
+    this->numberOfRamBanks = ramSize / 0x2000;
     this->ramBank = 0;
     this->ramSize = ramSize;
 
@@ -17,6 +18,11 @@ MBC1::MBC1(uint8_t* data, uint32_t ramSize, uint32_t romSize, uint32_t numberOfR
     if (this->ramSize > 0)
     {
         this->ram = new uint8_t[this->ramSize];
+
+        if (this->numberOfRamBanks == 0)
+        {
+            this->numberOfRamBanks = 1;
+        }
     }
 
     this->rom = data;
@@ -123,7 +129,7 @@ void MBC1::setByte(uint16_t address, uint8_t value)
             }
             else
             {
-                this->ramBank = newBankValue;
+                this->ramBank = newBankValue * 0x2000 < this->ramSize ? newBankValue : this->ramBank;
             }
             break;
         // ram/rom mode selection
