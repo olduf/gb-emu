@@ -1,5 +1,4 @@
-#ifndef _MEMORY_FACTORY_H_
-#define _MEMORY_FACTORY_H_
+#pragma once
 
 #include "lib/cpu/interrupt_handler.hpp"
 #include "lib/memory/cartridge/cartridge_factory.hpp"
@@ -31,5 +30,3 @@ private:
 };
 
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef _MEMORY_CARTRIDGE_FACTORY_H_
-#define _MEMORY_CARTRIDGE_FACTORY_H_
+#pragma once
 
 #include "lib/memory/cartridge/mbc1.hpp"
 #include "lib/memory/cartridge/rom.hpp"
@@ -17,5 +16,3 @@ private:
 };
 
 }
-
-#endif

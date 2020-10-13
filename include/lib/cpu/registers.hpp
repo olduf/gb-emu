@@ -1,5 +1,4 @@
-#ifndef _CPU_REGISTERS_H_
-#define _CPU_REGISTERS_H_
+#pragma once
 
 #include "lib/cpu/flags.hpp"
 
@@ -74,5 +73,3 @@ private:
 };
 
 }
-
-#endif

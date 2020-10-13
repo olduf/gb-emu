@@ -1,5 +1,4 @@
-#ifndef _GRAPHIC_LCD_MODE_H_
-#define _GRAPHIC_LCD_MODE_H_
+#pragma once
 
 #include <cstdint>
 
@@ -14,5 +13,3 @@ enum class LCDMode : uint8_t
 };
 
 }
-
-#endif

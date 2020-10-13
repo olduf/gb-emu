@@ -1,5 +1,4 @@
-#ifndef _CPU_INTERRUPT_HANDLER_H_
-#define _CPU_INTERRUPT_HANDLER_H_
+#pragma once
 
 #include <cstdint>
 
@@ -35,5 +34,3 @@ private:
 };
 
 }
-
-#endif

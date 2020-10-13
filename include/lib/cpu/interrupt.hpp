@@ -1,5 +1,4 @@
-#ifndef _CPU_INTERRUPT_H_
-#define _CPU_INTERRUPT_H_
+#pragma once
 
 #include <cstdint>
 
@@ -15,5 +14,3 @@ enum class Interrupt : uint8_t
 };
 
 }
-
-#endif

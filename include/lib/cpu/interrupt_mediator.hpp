@@ -1,5 +1,4 @@
-#ifndef _CPU_INTERRUPT_MEDIATOR_H_
-#define _CPU_INTERRUPT_MEDIATOR_H_
+#pragma once
 
 #include <cstdint>
 #include "lib/cpu/interrupt.hpp"
@@ -21,5 +20,3 @@ private:
 };
 
 }
-
-#endif

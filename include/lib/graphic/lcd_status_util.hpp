@@ -1,5 +1,4 @@
-#ifndef _GRAPHIC_LCD_STATUS_UTIL_H_
-#define _GRAPHIC_LCD_STATUS_UTIL_H_
+#pragma once
 
 #include "lib/graphic/lcd_mode.hpp"
 #include "lib/memory/memory_location.hpp"
@@ -17,5 +16,3 @@ public:
 };
 
 }
-
-#endif

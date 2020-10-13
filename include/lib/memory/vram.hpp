@@ -1,5 +1,4 @@
-#ifndef _MEMORY_VIDEO_RAM_H_
-#define _MEMORY_VIDEO_RAM_H_
+#pragma once
 
 #include "lib/graphic/lcd_status_util.hpp"
 #include "lib/memory/memory_space.hpp"
@@ -20,5 +19,3 @@ private:
 };
 
 }
-
-#endif

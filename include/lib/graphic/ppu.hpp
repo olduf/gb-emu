@@ -1,5 +1,4 @@
-#ifndef _GRAPHIC_PPU_H_
-#define _GRAPHIC_PPU_H_
+#pragma once
 
 #include "lib/graphic/obj_composition.hpp"
 #include "lib/graphic/renderer.hpp"
@@ -34,5 +33,3 @@ private:
 };
 
 }
-
-#endif

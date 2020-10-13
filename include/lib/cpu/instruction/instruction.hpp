@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_INSTRUCTION_H_
-#define _CPU_INSTRUCTION_INSTRUCTION_H_
+#pragma once
 
 #include <string>
 
@@ -38,5 +37,3 @@ private:
 };
 
 }
-
-#endif

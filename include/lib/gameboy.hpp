@@ -1,5 +1,4 @@
-#ifndef _GAMEBOY_H_
-#define _GAMEBOY_H_
+#pragma once
 
 #include "lib/cpu/cpu.hpp"
 #include "lib/cpu/interrupt_handler.hpp"
@@ -64,5 +63,3 @@ private:
 };
 
 }
-
-#endif

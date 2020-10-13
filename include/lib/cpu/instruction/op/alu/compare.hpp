@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_OP_ALU_COMPARE_H_
-#define _CPU_INSTRUCTION_OP_ALU_COMPARE_H_
+#pragma once
 
 #include "lib/cpu/instruction/op/op.hpp"
 #include "lib/cpu/instruction/instruction_argument.hpp"
@@ -19,5 +18,3 @@ private:
 };
 
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef _MEMORY_CARTRIDGE_ROM_H_
-#define _MEMORY_CARTRIDGE_ROM_H_
+#pragma once
 
 #include "lib/memory/memory_space.hpp"
 
@@ -18,5 +17,3 @@ private:
 };
 
 }
-
-#endif

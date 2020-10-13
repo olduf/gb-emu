@@ -1,5 +1,4 @@
-#ifndef _MEMORY_HIGH_RAM_H_
-#define _MEMORY_HIGH_RAM_H_
+#pragma once
 
 #include "lib/memory/memory_space.hpp"
 
@@ -17,5 +16,3 @@ private:
 };
 
 }
-
-#endif

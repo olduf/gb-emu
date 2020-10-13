@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_OP_DATATYPE_H_
-#define _CPU_INSTRUCTION_OP_DATATYPE_H_
+#pragma once
 
 namespace gb_lib {
 
@@ -13,5 +12,3 @@ enum class AffectFlagsType
 };
 
 }
-
-#endif

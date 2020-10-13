@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_BUILDER_H_
-#define _CPU_INSTRUCTION_BUILDER_H_
+#pragma once
 
 #include "lib/cpu/instruction/op/affect_flags_type.hpp"
 #include "lib/cpu/instruction/op/alu/add.hpp"
@@ -105,5 +104,3 @@ private:
 };
 
 }
-
-#endif

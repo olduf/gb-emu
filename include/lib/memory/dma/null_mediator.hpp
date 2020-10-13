@@ -1,5 +1,4 @@
-#ifndef _MEMORY_NULL_MEDIATOR_H_
-#define _MEMORY_NULL_MEDIATOR_H_
+#pragma once
 
 #include "lib/memory/dma/dma_mediator.hpp"
 
@@ -12,5 +11,3 @@ public:
 };
 
 }
-
-#endif

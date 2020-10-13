@@ -1,5 +1,4 @@
-#ifndef _CPU_H_
-#define _CPU_H_
+#pragma once
 
 #include <cstdint>
 
@@ -34,5 +33,3 @@ private:
 };
 
 }
-
-#endif

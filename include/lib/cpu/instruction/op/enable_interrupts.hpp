@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_OP_ENABLE_INTERRUPTS_H_
-#define _CPU_INSTRUCTION_OP_ENABLE_INTERRUPTS_H_
+#pragma once
 
 #include "lib/cpu/instruction/op/op.hpp"
 
@@ -17,5 +16,3 @@ private:
 };
 
 }
-
-#endif

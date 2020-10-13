@@ -1,5 +1,4 @@
-#ifndef _MEMORY_HDMA_HANDLER_H_
-#define _MEMORY_HDMA_HANDLER_H_
+#pragma once
 
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/graphic/lcd_status_util.hpp"
@@ -38,5 +37,3 @@ private:
 };
 
 }
-
-#endif

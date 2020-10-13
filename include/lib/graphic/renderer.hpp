@@ -1,5 +1,4 @@
-#ifndef _GRAPHIC_RENDERER_H_
-#define _GRAPHIC_RENDERER_H_
+#pragma once
 
 #include <cstdint>
 
@@ -12,5 +11,3 @@ public:
 };
 
 }
-
-#endif

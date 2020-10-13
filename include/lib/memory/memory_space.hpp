@@ -1,5 +1,4 @@
-#ifndef _MEMORY_SPACE_H_
-#define _MEMORY_SPACE_H_
+#pragma once
 
 #include <cstdint>
 
@@ -18,5 +17,3 @@ public:
 };
 
 }
-
-#endif

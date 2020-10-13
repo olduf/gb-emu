@@ -1,5 +1,4 @@
-#ifndef _AUDIO_SYNTHESIZER_H_
-#define _AUDIO_SYNTHESIZER_H_
+#pragma once
 
 namespace gb_lib {
 
@@ -10,5 +9,3 @@ public:
 };
 
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef _GRAPHIC_OBJ_COMPOSITION_H_
-#define _GRAPHIC_OBJ_COMPOSITION_H_
+#pragma once
 
 #include <cstdint>
 
@@ -12,5 +11,3 @@ enum class ObjComposition : uint8_t
 };
 
 }
-
-#endif

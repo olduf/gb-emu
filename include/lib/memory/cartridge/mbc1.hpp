@@ -1,5 +1,4 @@
-#ifndef _MEMORY_CARTRIDGE_MBC1_H_
-#define _MEMORY_CARTRIDGE_MBC1_H_
+#pragma once
 
 #include <cstring>
 #include "lib/memory/memory_space.hpp"
@@ -34,5 +33,3 @@ private:
 };
 
 }
-
-#endif

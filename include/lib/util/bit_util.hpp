@@ -1,5 +1,4 @@
-#ifndef _UTIL_BIT_UTIL_H_
-#define _UTIL_BIT_UTIL_H_
+#pragma once
 
 #include <cstdint>
 
@@ -12,8 +11,9 @@ public:
     static uint8_t setBit(uint8_t byte, uint8_t n);
     static uint8_t clearBit(uint8_t byte, uint8_t n);
     static uint8_t toggleBit(uint8_t byte, uint8_t n);
+
+private:
+    BitUtil() = default;
 };
 
 }
-
-#endif

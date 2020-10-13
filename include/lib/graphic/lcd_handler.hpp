@@ -1,5 +1,4 @@
-#ifndef _PPU_LCD_HANDLER_H_
-#define _PPU_LCD_HANDLER_H_
+#pragma once
 
 #include <cstdint>
 
@@ -43,5 +42,3 @@ private:
 };
 
 }
-
-#endif

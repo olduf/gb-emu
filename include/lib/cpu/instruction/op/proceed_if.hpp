@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_OP_PROCEED_IF_H_
-#define _CPU_INSTRUCTION_OP_PROCEED_IF_H_
+#pragma once
 
 #include "lib/cpu/instruction/op/flag_condition.hpp"
 #include "lib/cpu/instruction/op/op.hpp"
@@ -20,5 +19,3 @@ private:
 };
 
 }
-
-#endif

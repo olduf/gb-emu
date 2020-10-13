@@ -1,5 +1,4 @@
-#ifndef _MEMORY_IO_REGISTERS_H_
-#define _MEMORY_IO_REGISTERS_H_
+#pragma once
 
 #include "lib/cpu/interrupt_handler.hpp"
 #include "lib/memory/dma/dma_mediator.hpp"
@@ -30,5 +29,3 @@ private:
 };
 
 }
-
-#endif

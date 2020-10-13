@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_OP_FLAG_CONDITION_H_
-#define _CPU_INSTRUCTION_OP_FLAG_CONDITION_H_
+#pragma once
 
 namespace gb_lib {
 
@@ -12,5 +11,3 @@ enum class FlagCondition
 };
 
 }
-
-#endif

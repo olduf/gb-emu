@@ -1,5 +1,4 @@
-#ifndef _CGB_MEMORY_UNUSED_MEMORY_FEA0_FEFF_H_
-#define _CGB_MEMORY_UNUSED_MEMORY_FEA0_FEFF_H_
+#pragma once
 
 #include "lib/memory/memory_space.hpp"
 
@@ -31,5 +30,3 @@ private:
 };
 
 }
-
-#endif

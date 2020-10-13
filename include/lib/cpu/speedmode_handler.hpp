@@ -1,5 +1,4 @@
-#ifndef _CPU_SPEEDMODE_HANDLER_H_
-#define _CPU_SPEEDMODE_HANDLER_H_
+#pragma once
 
 #include "lib/cpu/speed_mode.hpp"
 #include "lib/memory/memory_space.hpp"
@@ -23,5 +22,3 @@ private:
 };
 
 }
-
-#endif

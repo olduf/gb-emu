@@ -1,5 +1,4 @@
-#ifndef _MEMORY_DMA_HANDLER_H_
-#define _MEMORY_DMA_HANDLER_H_
+#pragma once
 
 #include "lib/cpu/speedmode_handler.hpp"
 #include "lib/memory/dma/dma_mediator.hpp"
@@ -28,5 +27,3 @@ private:
 };
 
 }
-
-#endif

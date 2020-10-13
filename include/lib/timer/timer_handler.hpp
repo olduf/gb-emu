@@ -1,5 +1,4 @@
-#ifndef _TIMER_HANDLER_H_
-#define _TIMER_HANDLER_H_
+#pragma once
 
 #include <cstdint>
 #include "lib/cpu/interrupt_mediator.hpp"
@@ -45,5 +44,3 @@ private:
 };
 
 }
-
-#endif

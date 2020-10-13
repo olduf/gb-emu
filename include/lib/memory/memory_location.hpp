@@ -1,5 +1,4 @@
-#ifndef _MEMORY_LOCATION_H_
-#define _MEMORY_LOCATION_H_
+#pragma once
 
 #include <cstdint>
 
@@ -123,5 +122,3 @@ namespace gb_lib {
 
     const uint16_t IE = 0xFFFF;
 }
-
-#endif

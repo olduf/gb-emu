@@ -1,5 +1,4 @@
-#ifndef _TIMER_SET_TAC_AUDITOR_H_
-#define _TIMER_SET_TAC_AUDITOR_H_
+#pragma once
 
 #include <cstdint>
 #include "lib/timer/timer_util.hpp"
@@ -18,5 +17,3 @@ protected:
 };
 
 }
-
-#endif

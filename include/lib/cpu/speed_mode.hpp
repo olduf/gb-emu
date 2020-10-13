@@ -1,10 +1,8 @@
-#ifndef _CPU_SPEEDMODE_H_
-#define _CPU_SPEEDMODE_H_
-
-#include <cstdint>
+#pragma once
 
 namespace gb_lib {
 
+// TODO - uint8 ?
 enum class SpeedMode
 {
     NORMAL = 1,
@@ -12,5 +10,3 @@ enum class SpeedMode
 };
 
 }
-
-#endif

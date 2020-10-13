@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 int defaultMain()
 {
     bool loop = true;
-    int i = 1;
+    // int i = 1;
 
     while (loop)
     {

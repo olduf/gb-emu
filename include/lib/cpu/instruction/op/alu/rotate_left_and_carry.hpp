@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_OP_ALU_ROTATE_LEFT_AND_CARRY_H_
-#define _CPU_INSTRUCTION_OP_ALU_ROTATE_LEFT_AND_CARRY_H_
+#pragma once
 
 #include "lib/cpu/instruction/op/op.hpp"
 
@@ -12,5 +11,3 @@ public:
 };
 
 }
-
-#endif

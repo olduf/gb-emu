@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_OP_OP_H_
-#define _CPU_INSTRUCTION_OP_OP_H_
+#pragma once
 
 #include "lib/cpu/registers.hpp"
 #include "lib/memory/memory_space.hpp"
@@ -17,5 +16,3 @@ public:
 };
 
 }
-
-#endif

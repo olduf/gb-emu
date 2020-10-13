@@ -1,5 +1,4 @@
-#ifndef _MEMORY_DMA_MEDIATOR_H_
-#define _MEMORY_DMA_MEDIATOR_H_
+#pragma once
 
 #include <cstdint>
 
@@ -20,5 +19,3 @@ protected:
 };
 
 }
-
-#endif

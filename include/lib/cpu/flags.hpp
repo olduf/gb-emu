@@ -1,5 +1,4 @@
-#ifndef _CPU_FLAGS_H_
-#define _CPU_FLAGS_H_
+#pragma once
 
 #include <cstdint>
 #include "lib/util/bit_util.hpp"
@@ -35,5 +34,3 @@ private:
 };
 
 }
-
-#endif

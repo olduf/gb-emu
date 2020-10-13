@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_ARGUMENT_H_
-#define _CPU_INSTRUCTION_ARGUMENT_H_
+#pragma once
 
 #include <functional>
 
@@ -53,5 +52,3 @@ private:
 };
 
 }
-
-#endif

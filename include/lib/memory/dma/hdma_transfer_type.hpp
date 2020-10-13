@@ -1,5 +1,4 @@
-#ifndef _MEMORY_HDMA_TRANSFER_TYPE_H_
-#define _MEMORY_HDMA_TRANSFER_TYPE_H_
+#pragma once
 
 #include <cstdint>
 
@@ -12,5 +11,3 @@ enum class HDMATransferType : uint8_t
 };
 
 }
-
-#endif

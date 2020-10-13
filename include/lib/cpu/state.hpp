@@ -1,5 +1,4 @@
-#ifndef _CPU_STATE_H_
-#define _CPU_STATE_H_
+#pragma once
 
 namespace gb_lib {
 
@@ -11,5 +10,3 @@ enum class CpuState
 };
 
 }
-
-#endif

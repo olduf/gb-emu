@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_OP_SET_FLAG_ZERO_H_
-#define _CPU_INSTRUCTION_OP_SET_FLAG_ZERO_H_
+#pragma once
 
 #include "lib/cpu/instruction/op/flag_condition.hpp"
 #include "lib/cpu/instruction/op/op.hpp"
@@ -18,5 +17,3 @@ private:
 };
 
 }
-
-#endif

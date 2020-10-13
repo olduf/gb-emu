@@ -1,5 +1,4 @@
-#ifndef _CPU_INSTRUCTION_OP_ALU_ADD_U16_H_
-#define _CPU_INSTRUCTION_OP_ALU_ADD_U16_H_
+#pragma once
 
 #include "lib/cpu/instruction/op/affect_flags_type.hpp"
 #include "lib/cpu/instruction/op/op.hpp"
@@ -20,5 +19,3 @@ private:
 };
 
 }
-
-#endif
