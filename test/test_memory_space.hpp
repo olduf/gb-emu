@@ -1,5 +1,3 @@
-#ifdef TESTING
-
 #include "lib/memory/memory_space.hpp"
 
 using namespace gb_lib;
@@ -30,5 +28,3 @@ public:
 private:
     uint8_t memory[0xFFFF] = {};
 };
-
-#endif

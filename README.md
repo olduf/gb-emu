@@ -5,7 +5,7 @@ This is a learning experiment regarding emulation, not something meant for serio
 
 Aiming for reasonable, but not perfect accuracy. Will try to document my decisions.
 
-I am also not a professional C++ dev, haven't really used it since college.
+I am also not a professional C++ dev, haven't really used it since college, wanted to give it a try again.
 
 ## Requirement
  - [SFML 2.5](https://www.sfml-dev.org/index.php)
@@ -19,8 +19,9 @@ In a terminal, navigate to the project folder.
 - Run `cmake -Hstandalone -Bbuild/standalone`
 - Run `cmake --build build/standalone/`
 
-###  Tests
-TODO, not building since project migrated to ModernCPPStarter
+###  Unit Tests
+- Run `cmake -Htest -Bbuild/test`
+- Run `cmake --build build/test/`
 
 ## Usage
 ### Application
@@ -29,6 +30,9 @@ TODO, not building since project migrated to ModernCPPStarter
 #### Options
 - -h, --help: show help
 - -p, --path: path to the rom you want to load
+
+### Unit Tests
+- `./build/test/gbemuTests`
 
 ## Test roms results
 ### Blargg's

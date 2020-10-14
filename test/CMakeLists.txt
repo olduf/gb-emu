@@ -39,7 +39,7 @@ CPMAddPackage(
 
 # ---- Create binary ----
 
-file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp)
+file(GLOB_RECURSE sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR} "*.cpp" "*.hpp")
 add_executable(gbemuTests ${sources})
 target_link_libraries(gbemuTests doctest gbemu)
 
@@ -48,7 +48,7 @@ set_target_properties(gbemuTests PROPERTIES CXX_STANDARD 17)
 # enable compiler warnings
 if(NOT TEST_INSTALLED_VERSION)
   if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    target_compile_options(gbemu PUBLIC -Wall -pedantic -Wextra -Werror)
+    target_compile_options(gbemu PUBLIC -Wall -pedantic -Wextra)
   elseif(MSVC)
     target_compile_options(gbemu PUBLIC /W4 /WX)
     target_compile_definitions(gbemuTests PUBLIC DOCTEST_CONFIG_USE_STD_HEADERS)
