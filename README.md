@@ -5,7 +5,7 @@ This is a learning experiment regarding emulation, not something meant for serio
 
 Aiming for reasonable, but not perfect accuracy. Will try to document my decisions.
 
-I am also not a professional C++ dev, haven't really used it since college, wanted to give it a try again.
+Also, I am not a professional C++ dev, haven't really used it since college. Wanted to give it a try again.
 
 ## Requirement
  - [SFML 2.5](https://www.sfml-dev.org/index.php)
