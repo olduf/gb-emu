@@ -178,5 +178,5 @@ Failed
 Failed
 
 ## Technical References
-[Pan Docs](https://gbdev.io/pandocs/)
-[The Cycle-Accurate Game Boy Docs](https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf)
+- [Pan Docs](https://gbdev.io/pandocs/)
+- [The Cycle-Accurate Game Boy Docs](https://github.com/AntonioND/giibiiadvance/blob/master/docs/TCAGBD.pdf)
