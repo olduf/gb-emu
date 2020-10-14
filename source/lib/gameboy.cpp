@@ -9,7 +9,7 @@
 
 namespace gb_lib {
 
-GameBoy::GameBoy(const char* romPath)
+GameBoy::GameBoy(std::string romPath)
 {
     this->cpuCycle = 0;
 
@@ -185,9 +185,9 @@ void GameBoy::initialize()
     //
 }
 
-uint32_t GameBoy::loadFile(const char* romPath)
+uint32_t GameBoy::loadFile(std::string romPath)
 {
-    FILE* file = fopen(romPath, "rb");
+    FILE* file = fopen(romPath.c_str(), "rb");
     uint32_t sizeOfFile = 0;
 
     if (file) {

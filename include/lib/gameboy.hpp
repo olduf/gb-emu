@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "lib/cpu/cpu.hpp"
 #include "lib/cpu/interrupt_handler.hpp"
 #include "lib/cpu/speedmode_handler.hpp"
@@ -17,7 +19,7 @@ namespace gb_lib {
 class GameBoy
 {
 public:
-    GameBoy(const char* romPath); // graphic, audio
+    GameBoy(std::string romPath); // graphic, audio
     ~GameBoy();
 
     void stepFrame();
@@ -58,7 +60,7 @@ private:
 // temporary
 private:
     uint8_t* rom;
-    uint32_t loadFile(const char* romPath);
+    uint32_t loadFile(std::string romPath);
 
 };
 
