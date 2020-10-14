@@ -42,7 +42,7 @@ TODO, not building since project migrated to ModernCPPStarter
 | mem_timing     | :x:                |      |
 | mem_timing-2   | :x:                |      |
 
-### Mooneye
+### Mooneye's
 #### Acceptance
 | Test                    | Result             |
 | ----------------------- | ------------------ |
