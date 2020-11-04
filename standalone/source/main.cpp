@@ -7,6 +7,9 @@
 #include <string>
 
 #include "lib/gameboy.hpp"
+#include "implementations/default/console_renderer.hpp"
+#include "implementations/default/null_mmu_decorator.hpp"
+#include "implementations/default/null_synthesizer.hpp"
 
 int defaultMain();
 int sfmlMain();
