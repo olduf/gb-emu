@@ -11,15 +11,12 @@ MemorySpace* CartridgeFactory::create(uint8_t* rom, uint32_t romFileSize)
     uint32_t numberOfRomBanks = this->getNumberOfRomBanks(rom[0x148]);
     uint32_t romSize = numberOfRomBanks * 0x4000;
 
-    if (romSize > romFileSize)
-    {
-        romSize = romFileSize;
-    }
-
     switch (rom[0x0147])
     {
         // ROM ONLY
-        case 0x00: cartridge = new Rom(rom, romSize); break;
+        case 0x00:
+            cartridge = new Rom(rom, romSize);
+            break;
 
         // MBC 1
         // MBC1+RAM
@@ -27,7 +24,7 @@ MemorySpace* CartridgeFactory::create(uint8_t* rom, uint32_t romFileSize)
         case 0x01:
         case 0x02:
         case 0x03:
-            cartridge = new MBC1(rom, ramSize, romSize, numberOfRomBanks);
+            cartridge = new MBC1(rom, ramSize, romSize);
             break;
 
         // // MBC 2

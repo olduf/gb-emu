@@ -6,6 +6,7 @@ LCDMode LCDStatusUtil::getLCDMode(uint8_t stat)
 {
     return static_cast<LCDMode>(stat & 0b00000011);
 }
+
 LCDMode LCDStatusUtil::getLCDMode(MemorySpace* ioRegisters)
 {
     return this->getLCDMode(ioRegisters->getByte(STAT));

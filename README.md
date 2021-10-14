@@ -5,7 +5,7 @@ This is a learning experiment regarding emulation, not something meant for serio
 
 Aiming for reasonable, but not perfect accuracy. Will try to document my decisions.
 
-Also, I am not a professional C++ dev, haven't really used it since college. Wanted to give it a try again.
+Also, I am not a professional C++ dev.
 
 ## Requirement
  - [SFML 2.5](https://www.sfml-dev.org/index.php)
@@ -25,7 +25,7 @@ In a terminal, navigate to the project folder.
 
 ## Usage
 ### Application
-`./build/standalone/gbemu --path <pat to the rom>`
+`./build/standalone/gbemu --path <path to the rom>`
 
 #### Options
 - -h, --help: show help
@@ -158,15 +158,15 @@ Not implemented yet
 | ---------- | ------------------ |
 | bits_bank1 | :white_check_mark: |
 | bits_bank2 | :white_check_mark: |
-| bits_mode  | :x:                |
+| bits_mode  | :white_check_mark: |
 | bits_ramg  | :white_check_mark: |
-| ram_256kb  | :x:                |
-| ram_64kb   | :x:                |
+| ram_256kb  | :white_check_mark: |
+| ram_64kb   | :white_check_mark: |
 | rom_16Mb   | :x:                |
-| rom_1Mb    | :x:                |
-| rom_2Mb    | :x:                |
-| rom_4Mb    | :x:                |
-| rom_512kb  | :x:                |
+| rom_1Mb    | :white_check_mark: |
+| rom_2Mb    | :white_check_mark: |
+| rom_4Mb    | :white_check_mark: |
+| rom_512kb  | :white_check_mark: |
 | rom_8Mb    | :x:                |
 
 ##### MBC2

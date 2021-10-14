@@ -2,37 +2,39 @@
 
 namespace gb_lib {
 
-MBC1::MBC1(uint8_t* data, uint32_t ramSize, uint32_t romSize, uint32_t numberOfRomBanks)
+MBC1::MBC1(uint8_t* data, uint32_t ramSize, uint32_t romSize)
 {
-    this->externalRamEnabled = false;
-    this->ramMode = 0;
+    this->ram = nullptr;
+    this->rom = data;
 
+    this->bankingMode = BankingMode::SIMPLE;
+    this->externalRamEnabled = false;
+
+    this->currentRamBank = 0;
+    this->effectiveRamBank = 0;
     this->numberOfRamBanks = ramSize / 0x2000;
-    this->ramBank = 0;
     this->ramSize = ramSize;
 
-    this->numberOfRomBanks = numberOfRomBanks;
-    this->romBank = 1;
+    this->currentRomBank = 1;
+    this->effectiveRomBank0000 = 0;
+    this->effectiveRomBank4000 = 0;
+    this->numberOfRomBanks = romSize / 0x4000;
     this->romSize = romSize;
 
-    if (this->ramSize > 0)
+    if (ramSize > 0)
     {
-        this->ram = new uint8_t[this->ramSize];
-
-        if (this->numberOfRamBanks == 0)
-        {
-            this->numberOfRamBanks = 1;
-        }
+        this->ram = new uint8_t[ramSize] {};
     }
-
-    this->rom = data;
 }
 
 MBC1::~MBC1()
 {
-    delete[] this->ram;
+    if (this->ram != nullptr)
+    {
+        delete[] this->ram;
+        this->ram = nullptr;
+    }
 
-    this->ram = nullptr;
     this->rom = nullptr;
 }
 
@@ -44,38 +46,25 @@ uint8_t MBC1::getByte(uint16_t address)
         case 0x1000:
         case 0x2000:
         case 0x3000:
-            return this->rom[address];
+            return this->rom[this->effectiveRomBank0000 * 0x4000 + address];
             break;
         case 0x4000:
         case 0x5000:
         case 0x6000:
         case 0x7000:
-            {
-                uint32_t actualAddress = (this->romBank - 1) * 0x4000 + address;
-
-                if (actualAddress < this->romSize)
-                {
-                    return this->rom[actualAddress];
-                }
-                else
-                {
-                    return 0xFF;
-                }
-            }
+            return this->rom[this->effectiveRomBank4000 * 0x4000 + address];
             break;
         case 0xA000:
         case 0xB000:
             {
-                uint32_t effectiveRamAddress = this->getEffectiveRamAddress(address);
+                uint32_t effectiveRamAddress = this->getEffectiveRAMAddress(address);
 
                 if (this->externalRamEnabled && effectiveRamAddress < this->ramSize)
                 {
                     return this->ram[effectiveRamAddress];
                 }
-                else
-                {
-                    return 0xFF;
-                }
+
+                return 0xFF;
             }
             break;
         default:
@@ -85,80 +74,90 @@ uint8_t MBC1::getByte(uint16_t address)
 
 void MBC1::setByte(uint16_t address, uint8_t value)
 {
-    uint8_t newBankValue;
-
     switch (address & 0xF000)
     {
-        // ram enable
         case 0x0000:
         case 0x1000:
             {
-                if ((value & 0x000F) == 0b00001010)
-                {
-                    this->externalRamEnabled = true;
-                }
-                else
-                {
-                    this->externalRamEnabled = false;
-                }
+                bool oldValue = this->externalRamEnabled;
+
+                this->externalRamEnabled = (value & 0x0F) == 0x0A;
+
+//              if (oldValue && !this->externalRamEnabled)
+//              {
+//                  // save battery
+//              }
             }
             break;
-
-        // rom bank, lower 5 bits
         case 0x2000:
         case 0x3000:
             {
-                newBankValue = value & 0b00011111;
+                this->currentRomBank = value & 0b11111;
 
-                if ((newBankValue % 0x20) == 0)
+                if (this->currentRomBank == 0)
                 {
-                    newBankValue += 1;
+                    this->currentRomBank++;
                 }
 
-                this->romBank = (this->romBank & 0b01100000) | newBankValue;
+                this->setEffectiveBanks();
             }
             break;
-        // rom bank, upper 2 bits (Bit 5-6) or ram bank (00-03h)
         case 0x4000:
         case 0x5000:
-            newBankValue = value & 3;
-
-            if (this->ramMode == 0)
-            {
-                this->romBank = (newBankValue << 5) | (this->romBank & 0b00011111);
-            }
-            else
-            {
-                this->ramBank = newBankValue * 0x2000 < this->ramSize ? newBankValue : this->ramBank;
-            }
+            this->currentRamBank = value & 0b11;
+            this->setEffectiveBanks();
             break;
-        // ram/rom mode selection
         case 0x6000:
         case 0x7000:
-            this->ramMode = value & 1;
+            this->bankingMode = static_cast<BankingMode>(value & 1);
+            this->setEffectiveBanks();
             break;
-        // write to external ram -> TODO - battery save
         case 0xA000:
         case 0xB000:
-            uint32_t effectiveRamAddress = this->getEffectiveRamAddress(address);
-
-            if (this->externalRamEnabled && effectiveRamAddress < this->ramSize)
             {
-                this->ram[effectiveRamAddress] = value;
+                uint16_t effectiveRamAddress = this->getEffectiveRAMAddress(address);
+
+                if (this->externalRamEnabled && effectiveRamAddress < this->ramSize)
+                {
+                    this->ram[effectiveRamAddress] = value;
+                }
             }
     }
 }
 
-uint32_t MBC1::getEffectiveRamAddress(uint16_t address)
+uint32_t MBC1::getEffectiveRAMAddress(uint16_t address)
 {
-    uint32_t effectiveRamAddress = address - 0xA000;
+    return this->effectiveRamBank * 0x2000 + (address - 0xA000);
+}
 
-    if (this->ramMode == 1)
+void MBC1::setEffectiveBanks()
+{
+    if (this->bankingMode == BankingMode::ADVANCED)
     {
-        effectiveRamAddress +=  this->ramBank * 0x2000;
-    }
+        this->effectiveRamBank = 0;
 
-    return effectiveRamAddress;
+        if (this->numberOfRamBanks > 0)
+        {
+            this->effectiveRamBank = this->currentRamBank % this->numberOfRamBanks;
+        }
+
+        this->effectiveRomBank0000 = 0;
+        this->effectiveRomBank4000 = (this->currentRomBank % this->numberOfRomBanks) - 1;
+
+        uint32_t upperRomBank = this->currentRamBank << 5;
+
+        if (upperRomBank * 0x4000 < this->romSize)
+        {
+            this->effectiveRomBank0000 = upperRomBank | this->effectiveRomBank0000;
+            this->effectiveRomBank4000 = upperRomBank | this->effectiveRomBank4000;
+        }
+    }
+    else // BankingMode::SIMPLE
+    {
+        this->effectiveRamBank = 0;
+        this->effectiveRomBank0000 = 0;
+        this->effectiveRomBank4000 = (this->currentRomBank %this->numberOfRomBanks) - 1;
+    }
 }
 
 }

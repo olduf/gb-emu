@@ -2,6 +2,7 @@
 
 // debug
 #include "lib/cpu/instructions.hpp"
+#include <fstream>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -14,7 +15,7 @@ GameBoy::GameBoy(std::string romPath)
     this->cpuCycle = 0;
 
     uint32_t romSize = this->loadFile(romPath);
-    bool isCGB = false; // TODO
+    bool isCGB = false; // TODO - gbc
 
     MMUFactory mmuFactory;
     this->setTacAuditor = new SetTacAuditor(&(this->timerUtil));
@@ -28,19 +29,13 @@ GameBoy::GameBoy(std::string romPath)
     this->dmaHandler = new DMAHandler(this->mmu, &(this->dmaMediator), this->speedModeHandler);
     this->hdmaHandler = new HDMAHandler(this->mmu, &(this->dmaMediator), this->speedModeHandler);
     this->cpu = new Cpu(this->interruptHandler, this->mmu, &(this->registers), this->speedModeHandler);
-    this->ppu = new PPU(this->mmu, nullptr);
+    this->ppu = new PPU(this->mmu, nullptr); // TODO - renderer
 
     this->lcdHandler = new LCDHandler(this->interruptHandler, this->mmu, this->ppu, isCGB);
 }
-SetTacAuditor* setTacAuditor;
-
-TimerUtil timerUtil;
 
 GameBoy::~GameBoy()
 {
-    // temporary
-    delete this->rom;
-
     delete this->cpu;
     this->cpu = nullptr;
 
@@ -187,19 +182,18 @@ void GameBoy::initialize()
 
 uint32_t GameBoy::loadFile(std::string romPath)
 {
-    FILE* file = fopen(romPath.c_str(), "rb");
+    std::ifstream fileStream(romPath, std::ifstream::binary);
     uint32_t sizeOfFile = 0;
 
-    if (file) {
-        fseek(file, 0, SEEK_END);
-        sizeOfFile = ftell(file);
-        fseek(file, 0, SEEK_SET);
+    if (fileStream) {
+        fileStream.seekg (0, fileStream.end);
+        sizeOfFile = fileStream.tellg();
+        fileStream.seekg (0, fileStream.beg);
 
         this->rom = new uint8_t[sizeOfFile];
-
-        fread(this->rom, 1, sizeOfFile, file);
-        fclose(file);
-      }
+        fileStream.read (reinterpret_cast<char*>(this->rom), sizeOfFile);
+        fileStream.close();
+    }
 
     return sizeOfFile;
 }
